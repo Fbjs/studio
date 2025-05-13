@@ -1,7 +1,6 @@
-
 "use client";
 
-import type { ChatContact, User } from '@/lib/types';
+import type { ChatContact, User, ChatCategory } from '@/lib/types';
 import { ChatItem } from './ChatItem';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Input } from '@/components/ui/input';
@@ -23,6 +22,19 @@ interface ChatListProps {
   onToggleUserProfileSheet: () => void; 
 }
 
+type TabValue = 'All' | ChatCategory;
+
+const TABS: { value: TabValue; labelKey: string }[] = [
+  { value: 'All', labelKey: 'chat.all' },
+  { value: 'New', labelKey: 'chat.new' },
+  { value: 'Greeting', labelKey: 'chat.greeting' },
+  { value: 'Data Capture', labelKey: 'chat.dataCapture' },
+  { value: 'Closed', labelKey: 'chat.closed' },
+  { value: 'Scheduled', labelKey: 'chat.scheduled' },
+  { value: 'Follow-up', labelKey: 'chat.followUp' },
+];
+
+
 export function ChatList({ 
   chats, 
   selectedChatId, 
@@ -32,17 +44,13 @@ export function ChatList({
   onToggleUserProfileSheet 
 }: ChatListProps) {
   const [searchTerm, setSearchTerm] = useState('');
-  const [activeCategory, setActiveCategory] = useState('All');
+  const [activeCategory, setActiveCategory] = useState<TabValue>('All');
   const { t } = useTranslation();
 
   const filteredAndCategorizedChats = useMemo(() => {
     let tempChats = [...chats]; 
 
-    if (activeCategory === 'Unread') {
-      tempChats = tempChats.filter(chat => chat.unreadCount && chat.unreadCount > 0);
-    } else if (activeCategory !== 'All') {
-      // Assuming category might be translated, compare against original or translated values
-      // For simplicity, this example assumes category values ('Work', 'Friends') are not translated themselves for filtering
+    if (activeCategory !== 'All') {
       tempChats = tempChats.filter(chat => chat.category === activeCategory);
     }
 
@@ -51,6 +59,22 @@ export function ChatList({
       chat.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
   }, [chats, searchTerm, activeCategory]);
+
+  const noChatsMessage = useMemo(() => {
+    const activeTab = TABS.find(tab => tab.value === activeCategory);
+    const categoryName = activeTab ? t(activeTab.labelKey) : t('chat.all');
+  
+    if (filteredAndCategorizedChats.length > 0) return ""; // Don't show a message if there are chats
+  
+    if (searchTerm) {
+      return t('chat.noChatsMatching', { category: categoryName, searchTerm });
+    }
+    if (activeCategory === "All") {
+      return t('chat.noChatsYet');
+    }
+    return t('chat.noChatsInCategory', { category: categoryName });
+  }, [filteredAndCategorizedChats.length, activeCategory, searchTerm, t]);
+
 
   return (
     <div className="w-full md:w-96 bg-card flex flex-col border-r border-border h-full">
@@ -74,13 +98,18 @@ export function ChatList({
       </div>
 
       {/* Tabs Section */}
-      <div className="px-4 py-2 border-b border-border">
-        <Tabs value={activeCategory} onValueChange={setActiveCategory} className="w-full">
-          <TabsList className="grid w-full grid-cols-4 h-9">
-            <TabsTrigger value="All" className="text-xs px-2">{t('chat.all')}</TabsTrigger>
-            <TabsTrigger value="Work" className="text-xs px-2">{t('chat.work')}</TabsTrigger>
-            <TabsTrigger value="Friends" className="text-xs px-2">{t('chat.friends')}</TabsTrigger>
-            <TabsTrigger value="Unread" className="text-xs px-2">{t('chat.unread')}</TabsTrigger>
+      <div className="px-2 py-2 border-b border-border">
+        <Tabs value={activeCategory} onValueChange={(value) => setActiveCategory(value as TabValue)} className="w-full">
+          <TabsList className="flex flex-wrap gap-1 p-1 bg-muted rounded-md h-auto">
+            {TABS.map(tab => (
+              <TabsTrigger 
+                key={tab.value} 
+                value={tab.value} 
+                className="text-xs px-2.5 py-1.5 h-auto flex-auto data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+              >
+                {t(tab.labelKey)}
+              </TabsTrigger>
+            ))}
           </TabsList>
         </Tabs>
       </div>
@@ -98,11 +127,8 @@ export function ChatList({
               />
             ))
           ) : (
-            <p className="p-4 text-center text-muted-foreground">
-              {activeCategory === "All" && !searchTerm 
-                ? t('chat.noChatsYet') 
-                : t('chat.noChatsMatching', { category: t(`chat.${activeCategory.toLowerCase()}` as any), searchTerm: searchTerm })
-              }
+            <p className="p-4 text-center text-muted-foreground text-sm">
+              {noChatsMessage}
             </p>
           )}
         </div>

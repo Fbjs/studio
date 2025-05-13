@@ -1,11 +1,10 @@
-
 "use client";
 
 import { useState, useMemo, useEffect as useEffectReact } from 'react';
 import { useRouter } from 'next/navigation';
 import { ChatList } from '@/components/chat/ChatList';
 import { ChatWindow } from '@/components/chat/ChatWindow';
-import type { ChatContact, Message, User, PlanName } from '@/lib/types';
+import type { ChatContact, Message, User, PlanName, ChatCategory } from '@/lib/types';
 import { MessageSquareText, Loader2 } from 'lucide-react';
 import { BotConfigSheet } from '@/components/ai/BotConfigSheet';
 import { UserProfileSheet } from '@/components/profile/UserProfileSheet';
@@ -30,7 +29,7 @@ const mockContacts: ChatContact[] = [
     lastMessageTimestamp: new Date(Date.now() - 5 * 60 * 1000), 
     unreadCount: 2,
     onlineStatus: 'online',
-    category: 'Work',
+    category: 'New',
   },
   {
     id: 'contact2',
@@ -39,7 +38,7 @@ const mockContacts: ChatContact[] = [
     lastMessage: 'Can we fix it? Yes, we can!',
     lastMessageTimestamp: new Date(Date.now() - 30 * 60 * 1000), 
     onlineStatus: 'Last seen 15m ago',
-    category: 'Friends',
+    category: 'Greeting',
   },
   {
     id: 'contact3',
@@ -48,7 +47,7 @@ const mockContacts: ChatContact[] = [
     lastMessage: 'Good grief!',
     lastMessageTimestamp: new Date(Date.now() - 2 * 60 * 60 * 1000), 
     unreadCount: 5,
-    category: 'Work',
+    category: 'Data Capture',
   },
   {
     id: 'contact4',
@@ -57,7 +56,25 @@ const mockContacts: ChatContact[] = [
     lastMessage: 'Wondering about the project deadline.',
     lastMessageTimestamp: new Date(Date.now() - 24 * 60 * 60 * 1000), 
     onlineStatus: 'offline',
-    category: 'Friends',
+    category: 'Scheduled',
+  },
+  {
+    id: 'contact5',
+    name: 'Elon Musketeer',
+    avatarUrl: 'https://picsum.photos/seed/elon/100/100',
+    lastMessage: 'To the moon!',
+    lastMessageTimestamp: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
+    onlineStatus: 'offline',
+    category: 'Follow-up',
+  },
+  {
+    id: 'contact6',
+    name: 'Fiona Gallagher',
+    avatarUrl: 'https://picsum.photos/seed/fiona/100/100',
+    lastMessage: 'Closing the deal tomorrow.',
+    lastMessageTimestamp: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
+    onlineStatus: 'online',
+    category: 'Closed',
   },
 ];
 
@@ -76,6 +93,12 @@ const mockMessagesStore: { [chatId: string]: Message[] } = {
   ],
    contact4: [
     { id: 'msg4-1', senderId: 'contact4', content: 'Wondering about the project deadline.', timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000), status: 'read', avatarUrl: mockContacts[3].avatarUrl, senderName: mockContacts[3].name },
+  ],
+  contact5: [
+    { id: 'msg5-1', senderId: 'contact5', content: 'To the moon!', timestamp: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000), status: 'read', avatarUrl: mockContacts[4].avatarUrl, senderName: mockContacts[4].name },
+  ],
+  contact6: [
+    { id: 'msg6-1', senderId: 'contact6', content: 'Closing the deal tomorrow.', timestamp: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000), status: 'read', avatarUrl: mockContacts[5].avatarUrl, senderName: mockContacts[5].name },
   ],
 };
 

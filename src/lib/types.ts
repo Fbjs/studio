@@ -10,6 +10,8 @@ export interface Message {
   senderName?: string; // Only for group chats or if needed
 }
 
+export type ChatCategory = 'New' | 'Greeting' | 'Data Capture' | 'Closed' | 'Scheduled' | 'Follow-up';
+
 export interface ChatContact {
   id: string;
   name: string;
@@ -18,7 +20,7 @@ export interface ChatContact {
   lastMessageTimestamp: Date;
   unreadCount?: number;
   onlineStatus?: 'online' | 'offline' | string; // e.g., "last seen 2 hours ago"
-  category?: 'Work' | 'Friends' | 'Personal' | string; // Added for chat categorization
+  category?: ChatCategory; 
 }
 
 export type PlanName = 'FREE' | 'STARTER' | 'BUSINESS' | 'ENTERPRISE';
