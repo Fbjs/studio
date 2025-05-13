@@ -1,7 +1,7 @@
 
 "use client";
 
-import type { ChatContact, User, ChatCategory } from '@/lib/types';
+import type { ChatContact, User, ChatCategory, BotFlowStep } from '@/lib/types';
 import { ChatItem } from './ChatItem';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Input } from '@/components/ui/input';
@@ -21,10 +21,10 @@ interface ChatListProps {
   currentUser: User;
   onToggleBotConfigSheet: () => void;
   onToggleUserProfileSheet: () => void; 
-  botConversationFlowSteps: string[];
+  botConversationFlowSteps: BotFlowStep[];
 }
 
-type TabValue = 'All' | string; // 'All' or a category string
+type TabValue = 'All' | string; // 'All' or a BotFlowStep.name
 
 
 export function ChatList({ 
@@ -42,10 +42,10 @@ export function ChatList({
 
   const TABS = useMemo(() => {
     const dynamicTabs = botConversationFlowSteps.map(step => {
-      const translationKey = `chat.categoryLabel.${step.toLowerCase().replace(/\s+/g, '_')}`;
+      const translationKey = `botConfig.conversationFlow.stepDisplay.${step.name.toLowerCase().replace(/\s+/g, '_')}`;
       return {
-        value: step,
-        label: t(translationKey, {}, step) // Fallback to step name if no translation
+        value: step.name, // Use step.name as the value
+        label: t(translationKey, {}, step.name) // Fallback to step.name if no translation
       };
     });
     return [{ value: 'All' as const, label: t('chat.all') }, ...dynamicTabs];
@@ -58,15 +58,15 @@ export function ChatList({
       tempChats = tempChats.filter(chat => chat.category === activeCategory);
     }
 
-    if (!searchTerm) return tempChats;
+    if (!searchTerm) return tempChats.sort((a, b) => b.lastMessageTimestamp.getTime() - a.lastMessageTimestamp.getTime());
     return tempChats.filter(chat =>
       chat.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    ).sort((a, b) => b.lastMessageTimestamp.getTime() - a.lastMessageTimestamp.getTime());
   }, [chats, searchTerm, activeCategory]);
 
   const noChatsMessage = useMemo(() => {
     const activeTab = TABS.find(tab => tab.value === activeCategory);
-    const categoryName = activeTab ? activeTab.label : t('chat.all'); // Use tab label for category name
+    const categoryName = activeTab ? activeTab.label : t('chat.all'); 
   
     if (filteredAndCategorizedChats.length > 0) return ""; 
   

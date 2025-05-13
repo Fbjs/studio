@@ -10,10 +10,17 @@ export interface Message {
   senderName?: string; // Only for group chats or if needed
 }
 
-export type ChatCategory = string; // Changed from union type to string
+export interface BotFlowStep {
+  id: string;
+  name: string;
+  description: string;
+  prompt: string;
+}
+
+export type ChatCategory = BotFlowStep['name']; // Category is the name of a BotFlowStep
 
 export interface ChatContact {
-  id: string;
+  id:string;
   name: string;
   avatarUrl: string;
   lastMessage: string;
@@ -29,9 +36,9 @@ export interface User {
   id: string;
   name: string;
   avatarUrl: string;
-  planName?: PlanName;
-  tokensUsed?: number;
-  tokensTotal?: number;
+  planName: PlanName; // Made non-optional, defaulting to 'FREE'
+  tokensUsed: number;   // Made non-optional
+  tokensTotal: number;  // Made non-optional
 }
 
 export interface SalesExecutive {

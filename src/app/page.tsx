@@ -5,7 +5,7 @@ import { useState, useMemo, useEffect as useEffectReact } from 'react';
 import { useRouter } from 'next/navigation';
 import { ChatList } from '@/components/chat/ChatList';
 import { ChatWindow } from '@/components/chat/ChatWindow';
-import type { ChatContact, Message, User, PlanName } from '@/lib/types';
+import type { ChatContact, Message, User, PlanName, BotFlowStep } from '@/lib/types';
 import { MessageSquareText, Loader2 } from 'lucide-react';
 import { BotConfigSheet } from '@/components/ai/BotConfigSheet';
 import { UserProfileSheet } from '@/components/profile/UserProfileSheet';
@@ -21,10 +21,52 @@ const initialCurrentUser: User = {
   tokensTotal: 10,
 };
 
-// Canonical names for initial flow steps/categories
-const initialBotFlowSteps: string[] = [
-  "New", "Greeting", "Data Capture", "Qualify", "Scheduled", "Closed", "Follow-up"
+// Canonical names and structure for initial flow steps/categories
+const initialBotFlowStepsData: Omit<BotFlowStep, 'id'>[] = [
+  {
+    name: "New",
+    description: "Incoming chats that haven't been processed yet.",
+    prompt: "This is a new conversation. Assess the initial message and prepare to engage according to the overall bot persona."
+  },
+  {
+    name: "Greeting",
+    description: "Initial response, e.g., \"Hi there, thanks for contacting us. I'm the FIA Assistant.\"",
+    prompt: "You are in the Greeting phase. Your primary goal is to provide a warm welcome and introduce yourself as the FIA Assistant. Briefly state your purpose (e.g., to help with inquiries and schedule appointments). Do not ask for data yet."
+  },
+  {
+    name: "Data Capture",
+    description: "Collect important contact information (name, phone, email).",
+    prompt: "You are in the Data Capture phase. Your goal is to politely request essential contact information. Ask for full name, email address, and phone number. Explain briefly why this information is helpful (e.g., 'to personalize your experience and for follow-up')."
+  },
+  {
+    name: "Qualify",
+    description: "Determine if they are a good lead (understand their needs, budget, etc.). Asks about desired date/time for potential scheduling.",
+    prompt: "You are in the Qualify phase. Your goal is to understand the user's needs and interest. Ask open-ended questions about what they are looking for (e.g., 'What specific services are you interested in?', 'What challenges are you hoping to solve?'). If relevant to scheduling, you can also ask about their general availability preferences (e.g., 'Do you have any preferred days or times for a potential consultation?')."
+  },
+  {
+    name: "Scheduled",
+    description: "Handles the process of checking availability and proposing appointment times if the user is qualified and interested.",
+    prompt: "You are in the Scheduled phase. The user has expressed interest in an appointment. Based on their preferences and the sales executive's availability (which you can query via a tool if needed), propose specific time slots. If a slot is chosen, confirm the details and create a draft appointment."
+  },
+  {
+    name: "Closed",
+    description: "Conversations where an appointment is confirmed or a deal is finalized.",
+    prompt: "You are in the Closed phase. An appointment has been successfully scheduled or a deal has been finalized. Confirm all details of the appointment (date, time, executive, any preparation notes) or the deal. Thank the user and let them know what to expect next."
+  },
+  {
+    name: "Follow-up",
+    description: "Conversations where follow-up action is needed, e.g., user promised to provide more info later, or a scheduled appointment needs a reminder.",
+    prompt: "You are in the Follow-up phase. This conversation requires a follow-up. This could be due to a pending query, a scheduled appointment reminder, or an incomplete interaction. Identify the reason for follow-up and take appropriate action (e.g., send a reminder, ask for missing information, or re-engage after a certain period)."
+  }
 ];
+
+const generateInitialBotFlowSteps = (): BotFlowStep[] => {
+  return initialBotFlowStepsData.map((step, index) => ({
+    ...step,
+    id: `${step.name.toLowerCase().replace(/\s+/g, '-')}-${index}` // simple unique ID
+  }));
+};
+
 
 const mockContacts: ChatContact[] = [
   {
@@ -35,7 +77,7 @@ const mockContacts: ChatContact[] = [
     lastMessageTimestamp: new Date(Date.now() - 5 * 60 * 1000), 
     unreadCount: 2,
     onlineStatus: 'online',
-    category: initialBotFlowSteps[0], // New
+    category: initialBotFlowStepsData[0].name, // New
   },
   {
     id: 'contact2',
@@ -44,7 +86,7 @@ const mockContacts: ChatContact[] = [
     lastMessage: 'Can we fix it? Yes, we can!',
     lastMessageTimestamp: new Date(Date.now() - 30 * 60 * 1000), 
     onlineStatus: 'Last seen 15m ago',
-    category: initialBotFlowSteps[1], // Greeting
+    category: initialBotFlowStepsData[1].name, // Greeting
   },
   {
     id: 'contact3',
@@ -53,7 +95,7 @@ const mockContacts: ChatContact[] = [
     lastMessage: 'Good grief!',
     lastMessageTimestamp: new Date(Date.now() - 2 * 60 * 60 * 1000), 
     unreadCount: 5,
-    category: initialBotFlowSteps[2], // Data Capture
+    category: initialBotFlowStepsData[2].name, // Data Capture
   },
   {
     id: 'contact4',
@@ -62,7 +104,7 @@ const mockContacts: ChatContact[] = [
     lastMessage: 'Wondering about the project deadline.',
     lastMessageTimestamp: new Date(Date.now() - 24 * 60 * 60 * 1000), 
     onlineStatus: 'offline',
-    category: initialBotFlowSteps[3], // Qualify
+    category: initialBotFlowStepsData[3].name, // Qualify
   },
   {
     id: 'contact5',
@@ -71,7 +113,7 @@ const mockContacts: ChatContact[] = [
     lastMessage: 'To the moon!',
     lastMessageTimestamp: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
     onlineStatus: 'offline',
-    category: initialBotFlowSteps[4], // Scheduled
+    category: initialBotFlowStepsData[4].name, // Scheduled
   },
   {
     id: 'contact6',
@@ -80,7 +122,7 @@ const mockContacts: ChatContact[] = [
     lastMessage: 'Closing the deal tomorrow.',
     lastMessageTimestamp: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
     onlineStatus: 'online',
-    category: initialBotFlowSteps[5], // Closed
+    category: initialBotFlowStepsData[5].name, // Closed
   },
    {
     id: 'contact7',
@@ -89,7 +131,7 @@ const mockContacts: ChatContact[] = [
     lastMessage: 'Need to follow up on this.',
     lastMessageTimestamp: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000),
     onlineStatus: 'offline',
-    category: initialBotFlowSteps[6], // Follow-up
+    category: initialBotFlowStepsData[6].name, // Follow-up
   },
 ];
 
@@ -132,7 +174,7 @@ export default function Home() {
   const [messagesStore, setMessagesStore] = useState<{ [chatId: string]: Message[] }>(mockMessagesStore);
   const [isBotConfigSheetOpen, setIsBotConfigSheetOpen] = useState(false);
   const [isUserProfileSheetOpen, setIsUserProfileSheetOpen] = useState(false);
-  const [botConversationFlowSteps, setBotConversationFlowSteps] = useState<string[]>(initialBotFlowSteps);
+  const [botConversationFlowSteps, setBotConversationFlowSteps] = useState<BotFlowStep[]>(generateInitialBotFlowSteps());
 
 
   useEffectReact(() => {
@@ -153,11 +195,17 @@ export default function Home() {
             case 'FREE': updatedUser.tokensTotal = 10; break;
             case 'STARTER': updatedUser.tokensTotal = 5000; break;
             case 'BUSINESS': updatedUser.tokensTotal = 20000; break;
-            default: updatedUser.tokensTotal = 10;
+            default: updatedUser.tokensTotal = 10; // Default for FREE or unknown
           }
+        } else { // If no plan stored, default to FREE
+            updatedUser.planName = 'FREE';
+            updatedUser.tokensTotal = 10;
+            updatedUser.tokensUsed = 0;
         }
-        if (storedTokensTotal) updatedUser.tokensTotal = parseInt(storedTokensTotal, 10);
-        if (storedTokensUsed) updatedUser.tokensUsed = parseInt(storedTokensUsed, 10);
+
+        // Ensure tokens are numbers
+        updatedUser.tokensTotal = storedTokensTotal ? parseInt(storedTokensTotal, 10) : updatedUser.tokensTotal;
+        updatedUser.tokensUsed = storedTokensUsed ? parseInt(storedTokensUsed, 10) : updatedUser.tokensUsed;
         
         if (updatedUser.avatarUrl && !updatedUser.avatarUrl.includes('data-ai-hint')) {
            updatedUser.avatarUrl = `${updatedUser.avatarUrl.split('?')[0]}?${new URLSearchParams({"data-ai-hint": "user profile"}).toString()}`;

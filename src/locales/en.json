@@ -122,8 +122,9 @@
     "generalSettings": "General Bot Settings",
     "botNameLabel": "Bot Name",
     "botNamePlaceholder": "e.g., Support Helper",
-    "botPersonaLabel": "Bot Persona/Instructions",
+    "botPersonaLabel": "Bot Persona/Overall Instructions",
     "botPersonaPlaceholder": "Describe the bot's role and how it should behave. e.g., 'You are a friendly support agent that helps with product queries.'",
+    "botPersonaHelpText": "This persona applies to all conversation phases unless overridden by a phase-specific prompt.",
     "conversationLinking": "Conversation Linking",
     "linkingDescription": "Specify which conversations or types of queries this bot should handle. (This section is a placeholder for more complex linking logic).",
     "keywordsLabel": "Keywords to Trigger Bot",
@@ -131,11 +132,22 @@
     "keywordsHelpText": "Comma-separated keywords.",
     "conversationFlow": {
       "title": "Bot Conversation Flow / Chat Categories",
-      "description": "Define the sequence of tasks (categories) the bot should perform. These will also serve as chat filters.",
-      "addStepPlaceholder": "Enter category name (e.g., Hot Lead)",
-      "addStepButton": "Add Category",
-      "removeStepButton": "Remove Category",
-      "emptyFlow": "No categories defined yet. Add categories to build the conversation flow.",
+      "description": "Define the sequence of tasks (categories/phases) the bot should perform. These will also serve as chat filters.",
+      "addStepTitle": "Add New Flow Phase",
+      "editStepTitle": "Edit Flow Phase",
+      "stepNameLabel": "Phase Name",
+      "stepNamePlaceholder": "e.g., Greeting, Qualify Lead",
+      "stepDescriptionLabel": "Phase Description",
+      "stepDescriptionPlaceholder": "Describe the purpose of this phase.",
+      "stepPromptLabel": "Phase-Specific Prompt Instructions",
+      "stepPromptPlaceholder": "Enter specific instructions for the AI in this phase. This will be added to the main bot persona.",
+      "stepPromptHelpText": "These instructions guide the AI's behavior for this specific phase of the conversation.",
+      "addStepButton": "Add Phase",
+      "saveStepButton": "Save Phase",
+      "editStepButton": "Edit Phase",
+      "cancelEditButton": "Cancel Edit",
+      "removeStepButton": "Remove Phase",
+      "emptyFlow": "No conversation phases defined yet. Add phases to build the bot's workflow.",
       "stepDisplay": {
         "new": "New",
         "greeting": "Greeting",
@@ -144,6 +156,10 @@
         "scheduled": "Appointment Scheduled",
         "closed": "Deal Closed/Lost",
         "follow_up": "Follow-up Needed"
+      },
+      "validation": {
+        "nameRequired": "Phase name is required.",
+        "nameUnique": "Phase name must be unique."
       }
     },
     "appointmentScheduling": {
@@ -296,4 +312,3 @@
     }
   }
 }
-

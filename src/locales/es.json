@@ -122,8 +122,9 @@
     "generalSettings": "Configuración General del Bot",
     "botNameLabel": "Nombre del Bot",
     "botNamePlaceholder": "ej., Asistente de Soporte",
-    "botPersonaLabel": "Persona/Instrucciones del Bot",
+    "botPersonaLabel": "Persona/Instrucciones Generales del Bot",
     "botPersonaPlaceholder": "Describe el rol del bot y cómo debe comportarse. ej., 'Eres un amigable agente de soporte que ayuda con consultas sobre productos.'",
+    "botPersonaHelpText": "Esta persona se aplica a todas las fases de la conversación a menos que se anule con instrucciones específicas de fase.",
     "conversationLinking": "Vinculación de Conversaciones",
     "linkingDescription": "Especifica qué conversaciones o tipos de consultas debe manejar este bot. (Esta sección es un marcador de posición para una lógica de vinculación más compleja).",
     "keywordsLabel": "Palabras Clave para Activar el Bot",
@@ -131,11 +132,22 @@
     "keywordsHelpText": "Palabras clave separadas por coma.",
     "conversationFlow": {
       "title": "Flujo de Conversación del Bot / Categorías de Chat",
-      "description": "Define la secuencia de tareas (categorías) que el bot debe realizar. Estas también servirán como filtros de chat.",
-      "addStepPlaceholder": "Ingresa nombre de categoría (ej., Cliente Potencial)",
-      "addStepButton": "Agregar Categoría",
-      "removeStepButton": "Eliminar Categoría",
-      "emptyFlow": "Aún no hay categorías definidas. Agrega categorías para construir el flujo de conversación.",
+      "description": "Define la secuencia de tareas (categorías/fases) que el bot debe realizar. Estas también servirán como filtros de chat.",
+      "addStepTitle": "Agregar Nueva Fase de Flujo",
+      "editStepTitle": "Editar Fase de Flujo",
+      "stepNameLabel": "Nombre de la Fase",
+      "stepNamePlaceholder": "ej., Saludo, Calificar Prospecto",
+      "stepDescriptionLabel": "Descripción de la Fase",
+      "stepDescriptionPlaceholder": "Describe el propósito de esta fase.",
+      "stepPromptLabel": "Instrucciones Específicas de Fase para el Prompt",
+      "stepPromptPlaceholder": "Ingresa instrucciones específicas para la IA en esta fase. Esto se agregará a la persona principal del bot.",
+      "stepPromptHelpText": "Estas instrucciones guían el comportamiento de la IA para esta fase específica de la conversación.",
+      "addStepButton": "Agregar Fase",
+      "saveStepButton": "Guardar Fase",
+      "editStepButton": "Editar Fase",
+      "cancelEditButton": "Cancelar Edición",
+      "removeStepButton": "Eliminar Fase",
+      "emptyFlow": "Aún no hay fases de conversación definidas. Agrega fases para construir el flujo de trabajo del bot.",
       "stepDisplay": {
         "new": "Nuevo",
         "greeting": "Saludo Inicial",
@@ -144,6 +156,10 @@
         "scheduled": "Cita Agendada",
         "closed": "Acuerdo Cerrado/Perdido",
         "follow_up": "Seguimiento Requerido"
+      },
+      "validation": {
+        "nameRequired": "El nombre de la fase es obligatorio.",
+        "nameUnique": "El nombre de la fase debe ser único."
       }
     },
     "appointmentScheduling": {
@@ -296,4 +312,3 @@
     }
   }
 }
-
