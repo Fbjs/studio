@@ -10,7 +10,7 @@ export interface Message {
   senderName?: string; // Only for group chats or if needed
 }
 
-export type ChatCategory = 'New' | 'Greeting' | 'Data Capture' | 'Closed' | 'Scheduled' | 'Follow-up';
+export type ChatCategory = string; // Changed from union type to string
 
 export interface ChatContact {
   id: string;

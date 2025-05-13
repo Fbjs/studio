@@ -89,12 +89,14 @@
     "searchPlaceholder": "Search chats...",
     "configureAIButtonLabel": "Configure AI Bots",
     "all": "All",
-    "new": "New",
-    "greeting": "Greeting",
-    "dataCapture": "Data Capture",
-    "closed": "Closed",
-    "scheduled": "Scheduled",
-    "followUp": "Follow-up",
+    "categoryLabel": {
+      "new": "New",
+      "greeting": "Greeting",
+      "data_capture": "Data Capture",
+      "closed": "Closed",
+      "scheduled": "Scheduled",
+      "follow_up": "Follow-up"
+    },
     "noChatsYet": "No chats yet.",
     "noChatsInCategory": "No chats in {category}",
     "noChatsMatching": "No chats in {category} matching \"{searchTerm}\".",
@@ -127,18 +129,20 @@
     "keywordsPlaceholder": "e.g., help, support, pricing",
     "keywordsHelpText": "Comma-separated keywords.",
     "conversationFlow": {
-      "title": "Bot Conversation Flow",
-      "description": "Define the sequence of tasks or interactions the bot should perform during a conversation.",
-      "addStepPlaceholder": "Enter task name (e.g., Greet user)",
-      "addStepButton": "Add Task",
-      "removeStepButton": "Remove Task",
-      "emptyFlow": "No tasks defined yet. Add tasks to build the conversation flow.",
-      "exampleSteps": [
-        "Greet User",
-        "Consult Customer Data",
-        "Listen to Customer Needs",
-        "Respond"
-      ]
+      "title": "Bot Conversation Flow / Chat Categories",
+      "description": "Define the sequence of tasks (categories) the bot should perform. These will also serve as chat filters.",
+      "addStepPlaceholder": "Enter category name (e.g., Hot Lead)",
+      "addStepButton": "Add Category",
+      "removeStepButton": "Remove Category",
+      "emptyFlow": "No categories defined yet. Add categories to build the conversation flow.",
+      "stepDisplay": {
+        "new": "New",
+        "greeting": "Greeting",
+        "data_capture": "Data Capture",
+        "closed": "Closed",
+        "scheduled": "Scheduled",
+        "follow_up": "Follow-up"
+      }
     },
     "appointmentScheduling": {
       "title": "Appointment Scheduling Settings",

@@ -89,12 +89,14 @@
     "searchPlaceholder": "Buscar chats...",
     "configureAIButtonLabel": "Configurar Bots de IA",
     "all": "Todos",
-    "new": "Nueva",
-    "greeting": "Saludo",
-    "dataCapture": "Captación Datos",
-    "closed": "Cerrados",
-    "scheduled": "Agendados",
-    "followUp": "Insistencia",
+    "categoryLabel": {
+      "new": "Nuevo",
+      "greeting": "Saludo",
+      "data_capture": "Captación Datos",
+      "closed": "Cerrados",
+      "scheduled": "Agendados",
+      "follow_up": "Insistencia"
+    },
     "noChatsYet": "Aún no hay chats.",
     "noChatsInCategory": "No hay chats en {category}.",
     "noChatsMatching": "No hay chats en {category} que coincidan con \"{searchTerm}\".",
@@ -127,18 +129,20 @@
     "keywordsPlaceholder": "ej., ayuda, soporte, precios",
     "keywordsHelpText": "Palabras clave separadas por coma.",
     "conversationFlow": {
-      "title": "Flujo de Conversación del Bot",
-      "description": "Define la secuencia de tareas o interacciones que el bot debe realizar durante una conversación.",
-      "addStepPlaceholder": "Ingresa nombre de la tarea (ej., Saludar usuario)",
-      "addStepButton": "Agregar Tarea",
-      "removeStepButton": "Eliminar Tarea",
-      "emptyFlow": "Aún no hay tareas definidas. Agrega tareas para construir el flujo de conversación.",
-      "exampleSteps": [
-        "Saludo",
-        "Consultar datos del cliente",
-        "Escuchar lo que busca el cliente",
-        "Responder"
-      ]
+      "title": "Flujo de Conversación del Bot / Categorías de Chat",
+      "description": "Define la secuencia de tareas (categorías) que el bot debe realizar. Estas también servirán como filtros de chat.",
+      "addStepPlaceholder": "Ingresa nombre de categoría (ej., Cliente Potencial)",
+      "addStepButton": "Agregar Categoría",
+      "removeStepButton": "Eliminar Categoría",
+      "emptyFlow": "Aún no hay categorías definidas. Agrega categorías para construir el flujo de conversación.",
+      "stepDisplay": {
+        "new": "Nuevo",
+        "greeting": "Saludo",
+        "data_capture": "Captación Datos",
+        "closed": "Cerrado",
+        "scheduled": "Agendado",
+        "follow_up": "Insistencia"
+      }
     },
     "appointmentScheduling": {
       "title": "Configuración de Agendamiento de Citas",

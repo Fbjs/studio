@@ -1,3 +1,4 @@
+
 "use client";
 
 import type { ChatContact, User, ChatCategory } from '@/lib/types';
@@ -20,19 +21,10 @@ interface ChatListProps {
   currentUser: User;
   onToggleBotConfigSheet: () => void;
   onToggleUserProfileSheet: () => void; 
+  botConversationFlowSteps: string[];
 }
 
-type TabValue = 'All' | ChatCategory;
-
-const TABS: { value: TabValue; labelKey: string }[] = [
-  { value: 'All', labelKey: 'chat.all' },
-  { value: 'New', labelKey: 'chat.new' },
-  { value: 'Greeting', labelKey: 'chat.greeting' },
-  { value: 'Data Capture', labelKey: 'chat.dataCapture' },
-  { value: 'Closed', labelKey: 'chat.closed' },
-  { value: 'Scheduled', labelKey: 'chat.scheduled' },
-  { value: 'Follow-up', labelKey: 'chat.followUp' },
-];
+type TabValue = 'All' | string; // 'All' or a category string
 
 
 export function ChatList({ 
@@ -41,11 +33,23 @@ export function ChatList({
   onSelectChat, 
   currentUser, 
   onToggleBotConfigSheet,
-  onToggleUserProfileSheet 
+  onToggleUserProfileSheet,
+  botConversationFlowSteps
 }: ChatListProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [activeCategory, setActiveCategory] = useState<TabValue>('All');
   const { t } = useTranslation();
+
+  const TABS = useMemo(() => {
+    const dynamicTabs = botConversationFlowSteps.map(step => {
+      const translationKey = `chat.categoryLabel.${step.toLowerCase().replace(/\s+/g, '_')}`;
+      return {
+        value: step,
+        label: t(translationKey, {}, step) // Fallback to step name if no translation
+      };
+    });
+    return [{ value: 'All' as const, label: t('chat.all') }, ...dynamicTabs];
+  }, [botConversationFlowSteps, t]);
 
   const filteredAndCategorizedChats = useMemo(() => {
     let tempChats = [...chats]; 
@@ -62,9 +66,9 @@ export function ChatList({
 
   const noChatsMessage = useMemo(() => {
     const activeTab = TABS.find(tab => tab.value === activeCategory);
-    const categoryName = activeTab ? t(activeTab.labelKey) : t('chat.all');
+    const categoryName = activeTab ? activeTab.label : t('chat.all'); // Use tab label for category name
   
-    if (filteredAndCategorizedChats.length > 0) return ""; // Don't show a message if there are chats
+    if (filteredAndCategorizedChats.length > 0) return ""; 
   
     if (searchTerm) {
       return t('chat.noChatsMatching', { category: categoryName, searchTerm });
@@ -73,7 +77,7 @@ export function ChatList({
       return t('chat.noChatsYet');
     }
     return t('chat.noChatsInCategory', { category: categoryName });
-  }, [filteredAndCategorizedChats.length, activeCategory, searchTerm, t]);
+  }, [filteredAndCategorizedChats.length, activeCategory, searchTerm, t, TABS]);
 
 
   return (
@@ -107,7 +111,7 @@ export function ChatList({
                 value={tab.value} 
                 className="text-xs px-2.5 py-1.5 h-auto flex-auto data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
               >
-                {t(tab.labelKey)}
+                {tab.label}
               </TabsTrigger>
             ))}
           </TabsList>

@@ -30,28 +30,32 @@ import {
 interface BotConfigSheetProps {
   isOpen: boolean;
   onOpenChange: (isOpen: boolean) => void;
+  flowSteps: string[];
+  onFlowStepsChange: (steps: string[]) => void;
 }
 
-export function BotConfigSheet({ isOpen, onOpenChange }: BotConfigSheetProps) {
+export function BotConfigSheet({ isOpen, onOpenChange, flowSteps, onFlowStepsChange }: BotConfigSheetProps) {
   const { t } = useTranslation();
-  const [flowSteps, setFlowSteps] = useState<string[]>([
-    t('botConfig.conversationFlow.exampleSteps.0'), // Saludo
-    t('botConfig.conversationFlow.exampleSteps.1'), // Consultar datos del cliente
-    t('botConfig.conversationFlow.exampleSteps.2'), // Escuchar lo que busca el cliente
-    t('botConfig.conversationFlow.exampleSteps.3')  // Responder
-  ]);
   const [newFlowStep, setNewFlowStep] = useState('');
 
   const handleAddFlowStep = () => {
-    if (newFlowStep.trim()) {
-      setFlowSteps(prev => [...prev, newFlowStep.trim()]);
+    if (newFlowStep.trim() && !flowSteps.includes(newFlowStep.trim())) {
+      onFlowStepsChange([...flowSteps, newFlowStep.trim()]);
       setNewFlowStep('');
     }
   };
 
   const handleRemoveFlowStep = (indexToRemove: number) => {
-    setFlowSteps(prev => prev.filter((_, index) => index !== indexToRemove));
+    onFlowStepsChange(flowSteps.filter((_, index) => index !== indexToRemove));
   };
+
+  const getStepDisplayNate = (step: string) => {
+    // Try to translate known canonical step names, otherwise display the step as is
+    // Example: if step is "New", try to find translation for "botConfig.conversationFlow.stepDisplay.new"
+    const translationKey = `botConfig.conversationFlow.stepDisplay.${step.toLowerCase().replace(/\s+/g, '_')}`;
+    return t(translationKey, {}, step); // Fallback to step name if no translation
+  };
+
 
   return (
     <Sheet open={isOpen} onOpenChange={onOpenChange}>
@@ -118,7 +122,7 @@ export function BotConfigSheet({ isOpen, onOpenChange }: BotConfigSheetProps) {
               <div className="space-y-2">
                 {flowSteps.map((step, index) => (
                   <div key={index} className="flex items-center justify-between p-2 pr-1 border rounded-md bg-muted/30 hover:bg-muted/50 transition-colors">
-                    <span className="text-sm flex-1 break-words">{index + 1}. {step}</span>
+                    <span className="text-sm flex-1 break-words">{index + 1}. {getStepDisplayNate(step)}</span>
                     <Button 
                       variant="ghost" 
                       size="icon" 
@@ -144,7 +148,7 @@ export function BotConfigSheet({ isOpen, onOpenChange }: BotConfigSheetProps) {
                   placeholder={t('botConfig.conversationFlow.addStepPlaceholder')}
                   className="flex-1"
                 />
-                <Button onClick={handleAddFlowStep} disabled={!newFlowStep.trim()} className="shrink-0">
+                <Button onClick={handleAddFlowStep} disabled={!newFlowStep.trim() || flowSteps.includes(newFlowStep.trim())} className="shrink-0">
                   <PlusCircle size={18} className="mr-2" />
                   {t('botConfig.conversationFlow.addStepButton')}
                 </Button>

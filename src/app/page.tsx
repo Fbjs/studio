@@ -1,10 +1,11 @@
+
 "use client";
 
 import { useState, useMemo, useEffect as useEffectReact } from 'react';
 import { useRouter } from 'next/navigation';
 import { ChatList } from '@/components/chat/ChatList';
 import { ChatWindow } from '@/components/chat/ChatWindow';
-import type { ChatContact, Message, User, PlanName, ChatCategory } from '@/lib/types';
+import type { ChatContact, Message, User, PlanName } from '@/lib/types';
 import { MessageSquareText, Loader2 } from 'lucide-react';
 import { BotConfigSheet } from '@/components/ai/BotConfigSheet';
 import { UserProfileSheet } from '@/components/profile/UserProfileSheet';
@@ -20,6 +21,11 @@ const initialCurrentUser: User = {
   tokensTotal: 10,
 };
 
+// Canonical names for initial flow steps/categories
+const initialBotFlowSteps: string[] = [
+  "New", "Greeting", "Data Capture", "Closed", "Scheduled", "Follow-up"
+];
+
 const mockContacts: ChatContact[] = [
   {
     id: 'contact1',
@@ -29,7 +35,7 @@ const mockContacts: ChatContact[] = [
     lastMessageTimestamp: new Date(Date.now() - 5 * 60 * 1000), 
     unreadCount: 2,
     onlineStatus: 'online',
-    category: 'New',
+    category: initialBotFlowSteps[0], // New
   },
   {
     id: 'contact2',
@@ -38,7 +44,7 @@ const mockContacts: ChatContact[] = [
     lastMessage: 'Can we fix it? Yes, we can!',
     lastMessageTimestamp: new Date(Date.now() - 30 * 60 * 1000), 
     onlineStatus: 'Last seen 15m ago',
-    category: 'Greeting',
+    category: initialBotFlowSteps[1], // Greeting
   },
   {
     id: 'contact3',
@@ -47,7 +53,7 @@ const mockContacts: ChatContact[] = [
     lastMessage: 'Good grief!',
     lastMessageTimestamp: new Date(Date.now() - 2 * 60 * 60 * 1000), 
     unreadCount: 5,
-    category: 'Data Capture',
+    category: initialBotFlowSteps[2], // Data Capture
   },
   {
     id: 'contact4',
@@ -56,7 +62,7 @@ const mockContacts: ChatContact[] = [
     lastMessage: 'Wondering about the project deadline.',
     lastMessageTimestamp: new Date(Date.now() - 24 * 60 * 60 * 1000), 
     onlineStatus: 'offline',
-    category: 'Scheduled',
+    category: initialBotFlowSteps[4], // Scheduled
   },
   {
     id: 'contact5',
@@ -65,7 +71,7 @@ const mockContacts: ChatContact[] = [
     lastMessage: 'To the moon!',
     lastMessageTimestamp: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
     onlineStatus: 'offline',
-    category: 'Follow-up',
+    category: initialBotFlowSteps[5], // Follow-up
   },
   {
     id: 'contact6',
@@ -74,7 +80,7 @@ const mockContacts: ChatContact[] = [
     lastMessage: 'Closing the deal tomorrow.',
     lastMessageTimestamp: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
     onlineStatus: 'online',
-    category: 'Closed',
+    category: initialBotFlowSteps[3], // Closed
   },
 ];
 
@@ -114,6 +120,8 @@ export default function Home() {
   const [messagesStore, setMessagesStore] = useState<{ [chatId: string]: Message[] }>(mockMessagesStore);
   const [isBotConfigSheetOpen, setIsBotConfigSheetOpen] = useState(false);
   const [isUserProfileSheetOpen, setIsUserProfileSheetOpen] = useState(false);
+  const [botConversationFlowSteps, setBotConversationFlowSteps] = useState<string[]>(initialBotFlowSteps);
+
 
   useEffectReact(() => {
     const authStatus = localStorage.getItem('isAuthenticated');
@@ -277,6 +285,7 @@ export default function Home() {
         currentUser={currentUser}
         onToggleBotConfigSheet={toggleBotConfigSheet}
         onToggleUserProfileSheet={toggleUserProfileSheet}
+        botConversationFlowSteps={botConversationFlowSteps}
       />
       <main className="flex-1 flex flex-col">
         {selectedChat ? (
@@ -297,7 +306,9 @@ export default function Home() {
       </main>
       <BotConfigSheet 
         isOpen={isBotConfigSheetOpen} 
-        onOpenChange={setIsBotConfigSheetOpen} 
+        onOpenChange={setIsBotConfigSheetOpen}
+        flowSteps={botConversationFlowSteps}
+        onFlowStepsChange={setBotConversationFlowSteps}
       />
       <UserProfileSheet
         isOpen={isUserProfileSheetOpen}
