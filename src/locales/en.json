@@ -123,6 +123,20 @@
     "keywordsLabel": "Keywords to Trigger Bot",
     "keywordsPlaceholder": "e.g., help, support, pricing",
     "keywordsHelpText": "Comma-separated keywords.",
+    "conversationFlow": {
+      "title": "Bot Conversation Flow",
+      "description": "Define the sequence of tasks or interactions the bot should perform during a conversation.",
+      "addStepPlaceholder": "Enter task name (e.g., Greet user)",
+      "addStepButton": "Add Task",
+      "removeStepButton": "Remove Task",
+      "emptyFlow": "No tasks defined yet. Add tasks to build the conversation flow.",
+      "exampleSteps": [
+        "Greet User",
+        "Consult Customer Data",
+        "Listen to Customer Needs",
+        "Respond"
+      ]
+    },
     "appointmentScheduling": {
       "title": "Appointment Scheduling Settings",
       "enableBotScheduling": "Enable Bot Scheduling",

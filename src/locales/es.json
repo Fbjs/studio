@@ -123,6 +123,20 @@
     "keywordsLabel": "Palabras Clave para Activar el Bot",
     "keywordsPlaceholder": "ej., ayuda, soporte, precios",
     "keywordsHelpText": "Palabras clave separadas por coma.",
+    "conversationFlow": {
+      "title": "Flujo de Conversación del Bot",
+      "description": "Define la secuencia de tareas o interacciones que el bot debe realizar durante una conversación.",
+      "addStepPlaceholder": "Ingresa nombre de la tarea (ej., Saludar usuario)",
+      "addStepButton": "Agregar Tarea",
+      "removeStepButton": "Eliminar Tarea",
+      "emptyFlow": "Aún no hay tareas definidas. Agrega tareas para construir el flujo de conversación.",
+      "exampleSteps": [
+        "Saludo",
+        "Consultar datos del cliente",
+        "Escuchar lo que busca el cliente",
+        "Responder"
+      ]
+    },
     "appointmentScheduling": {
       "title": "Configuración de Agendamiento de Citas",
       "enableBotScheduling": "Habilitar Agendamiento por Bot",
