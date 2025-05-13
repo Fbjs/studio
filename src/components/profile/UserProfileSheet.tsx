@@ -15,8 +15,10 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { UserAvatar } from "@/components/chat/UserAvatar";
-import { Award, Coins, UserCircle2 } from "lucide-react";
+import { Award, Coins, LogOut } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
+import { useRouter } from "next/navigation";
+import { useToast } from "@/hooks/use-toast";
 
 interface UserProfileSheetProps {
   isOpen: boolean;
@@ -25,9 +27,22 @@ interface UserProfileSheetProps {
 }
 
 export function UserProfileSheet({ isOpen, onOpenChange, currentUser }: UserProfileSheetProps) {
+  const router = useRouter();
+  const { toast } = useToast();
+
   const tokensUsedPercent = currentUser.tokensTotal && currentUser.tokensTotal > 0 
     ? Math.round(((currentUser.tokensUsed || 0) / currentUser.tokensTotal) * 100)
     : 0;
+
+  const handleLogout = () => {
+    localStorage.removeItem('isAuthenticated');
+    toast({
+      title: "Logged Out",
+      description: "You have been successfully logged out.",
+    });
+    onOpenChange(false); // Close the sheet
+    router.push('/login');
+  };
 
   return (
     <Sheet open={isOpen} onOpenChange={onOpenChange}>
@@ -97,10 +112,16 @@ export function UserProfileSheet({ isOpen, onOpenChange, currentUser }: UserProf
             </div>
           </div>
         </div>
+        
+        <Separator />
 
-        <SheetFooter className="p-6 border-t mt-auto">
+        <SheetFooter className="p-6 flex flex-col gap-2 sm:flex-row">
+          <Button variant="destructive" onClick={handleLogout} className="w-full sm:w-auto">
+            <LogOut size={16} className="mr-2" />
+            Log Out
+          </Button>
           <SheetClose asChild>
-            <Button variant="outline" className="w-full">Close</Button>
+            <Button variant="outline" className="w-full sm:w-auto">Close</Button>
           </SheetClose>
         </SheetFooter>
       </SheetContent>
