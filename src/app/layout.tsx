@@ -16,8 +16,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'DarkWhisper Chat', // This title can be dynamic based on language later if needed
-  description: 'A WhatsApp-style chat application in dark mode.',
+  title: 'FIA Assistant Chat', // This title can be dynamic based on language later if needed
+  description: 'An intelligent chat application powered by FIA Assistant.',
 };
 
 export default function RootLayout({

@@ -1,7 +1,7 @@
 
 {
   "app": {
-    "title": "DarkWhisper Chat",
+    "title": "FIA Assistant Chat",
     "verifyingSession": "Verificando sesión..."
   },
   "userProfile": {
@@ -26,7 +26,7 @@
     "spanish": "Español"
   },
   "login": {
-    "welcome": "Bienvenido a DarkWhisper",
+    "welcome": "Bienvenido a FIA Assistant Chat",
     "howToLogin": "¿Cómo te gustaría iniciar sesión?",
     "newUserQR": "Nuevo Usuario - Vincular con Código QR",
     "existingUserLogin": "Usuario Existente - Iniciar Sesión",
@@ -97,7 +97,7 @@
     "videoCall": "Videollamada",
     "audioCall": "Llamada de audio",
     "moreOptions": "Más opciones",
-    "selectChatPrompt": "DarkWhisper Chat",
+    "selectChatPrompt": "FIA Assistant Chat",
     "selectChatMessage": "Selecciona un chat para empezar a enviar mensajes.",
     "e2eEncryptionNotice": "Tus mensajes están cifrados de extremo a extremo (¡no realmente, esto es una demostración!).",
     "attachFile": "Adjuntar archivo",
