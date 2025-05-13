@@ -116,12 +116,12 @@ export function BotConfigSheet({ isOpen, onOpenChange, flowSteps, onFlowStepsCha
           </SheetDescription>
         </SheetHeader>
         
-        <ScrollArea className="flex-1">
-          <div className="p-6 space-y-6">
-            <div>
+        <ScrollArea className="flex-1 w-full sm:max-w-2xl">
+          <div className="p-6 space-y-6 flex-1 w-full sm:max-w-2xl">
+            <div className="w-full">
               <h3 className="text-lg font-semibold mb-3 flex items-center">
                 <Settings size={20} className="mr-2 text-muted-foreground" />
-                {t('botConfig.generalSettings')}
+                {t('botConfig.generalSettings')}xzxzxz
               </h3>
               <div className="space-y-4 p-4 border rounded-lg bg-card">
                 <div>
