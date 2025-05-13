@@ -222,7 +222,7 @@ export function BotConfigSheet({ isOpen, onOpenChange, flowSteps, onFlowStepsCha
                 <div className="space-y-2">
                   {flowSteps.map((step, index) => (
                     <div key={step.id} className="flex items-start justify-between p-3 border rounded-md bg-muted/30 hover:bg-muted/50 transition-colors">
-                      <div className="flex-1 min-w-0">
+                      <div className="flex-1 min-w-0 overflow-hidden"> {/* Added overflow-hidden here */}
                         <h5 className="font-semibold text-sm flex items-center">
                            <MessageSquare size={16} className="mr-2 text-primary opacity-80"/> {index + 1}. {getStepDisplayName(step.name)}
                         </h5>
