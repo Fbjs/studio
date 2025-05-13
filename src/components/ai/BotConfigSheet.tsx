@@ -105,7 +105,7 @@ export function BotConfigSheet({ isOpen, onOpenChange, flowSteps, onFlowStepsCha
 
   return (
     <Sheet open={isOpen} onOpenChange={(open) => { onOpenChange(open); if (!open) handleCancelEdit(); }}>
-      <SheetContent className="w-full sm:max-w-lg flex flex-col p-0">
+      <SheetContent className="w-full sm:max-w-2xl flex flex-col p-0">
         <SheetHeader className="p-6 border-b">
           <SheetTitle className="flex items-center text-2xl">
             <Bot size={28} className="mr-3 text-primary" />
@@ -320,3 +320,4 @@ export function BotConfigSheet({ isOpen, onOpenChange, flowSteps, onFlowStepsCha
     </Sheet>
   );
 }
+
