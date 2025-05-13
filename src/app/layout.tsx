@@ -1,7 +1,8 @@
+
 import type {Metadata} from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
-import { Toaster } from '@/components/ui/toaster'; // Added Toaster
+import { Toaster } from '@/components/ui/toaster';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -14,8 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'DarkWhisper Chat', // Updated title
-  description: 'A WhatsApp-style chat application in dark mode.', // Updated description
+  title: 'DarkWhisper Chat',
+  description: 'A WhatsApp-style chat application in dark mode.',
 };
 
 export default function RootLayout({
@@ -24,10 +25,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark"> {/* Added dark class */}
+    <html lang="en" className="dark">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         {children}
-        <Toaster /> {/* Added Toaster */}
+        <Toaster />
       </body>
     </html>
   );

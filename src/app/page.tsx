@@ -1,13 +1,14 @@
 
 "use client";
 
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect as useEffectReact } from 'react'; // Renamed to avoid conflict
+import { useRouter } from 'next/navigation';
 import { ChatList } from '@/components/chat/ChatList';
 import { ChatWindow } from '@/components/chat/ChatWindow';
 import type { ChatContact, Message, User } from '@/lib/types';
-import { MessageSquareText } from 'lucide-react';
+import { MessageSquareText, Loader2 } from 'lucide-react';
 import { BotConfigSheet } from '@/components/ai/BotConfigSheet';
-import { UserProfileSheet } from '@/components/profile/UserProfileSheet'; // Import UserProfileSheet
+import { UserProfileSheet } from '@/components/profile/UserProfileSheet';
 
 // Mock Data
 const currentUser: User = {
@@ -79,11 +80,27 @@ const mockMessagesStore: { [chatId: string]: Message[] } = {
 
 
 export default function Home() {
+  const router = useRouter();
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+
   const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
   const [chats, setChats] = useState<ChatContact[]>(mockContacts);
   const [messagesStore, setMessagesStore] = useState<{ [chatId: string]: Message[] }>(mockMessagesStore);
   const [isBotConfigSheetOpen, setIsBotConfigSheetOpen] = useState(false);
-  const [isUserProfileSheetOpen, setIsUserProfileSheetOpen] = useState(false); // State for UserProfileSheet
+  const [isUserProfileSheetOpen, setIsUserProfileSheetOpen] = useState(false);
+
+  useEffectReact(() => {
+    // This effect runs on the client after hydration
+    const authStatus = localStorage.getItem('isAuthenticated');
+    if (authStatus === 'true') {
+      setIsAuthenticated(true);
+    } else {
+      // Clear any potentially stale auth status and redirect
+      localStorage.removeItem('isAuthenticated'); 
+      router.replace('/login');
+    }
+  }, [router]);
+
 
   const selectedChat = useMemo(() => {
     return chats.find(chat => chat.id === selectedChatId) || null;
@@ -154,7 +171,7 @@ export default function Home() {
     }, 1500);
   };
   
-  useEffect(() => {
+  useEffectReact(() => {
     const updatedChatsWithHints = mockContacts.map(contact => ({
       ...contact,
       avatarUrl: `${contact.avatarUrl.split('?')[0]}?${new URLSearchParams({"data-ai-hint": "person profile"}).toString()}`
@@ -175,7 +192,7 @@ export default function Home() {
         });
     }
 
-    currentUser.avatarUrl = updatedCurrentUser.avatarUrl; // Update global const for UserAvatar in ChatList footer
+    currentUser.avatarUrl = updatedCurrentUser.avatarUrl; 
 
     setChats(updatedChatsWithHints);
     setMessagesStore(updatedMessagesStoreWithHints);
@@ -186,9 +203,24 @@ export default function Home() {
     setIsBotConfigSheetOpen(prev => !prev);
   };
 
-  const toggleUserProfileSheet = () => { // Handler for UserProfileSheet
+  const toggleUserProfileSheet = () => {
     setIsUserProfileSheetOpen(prev => !prev);
   };
+
+  if (isAuthenticated === null) {
+    return (
+      <div className="flex h-screen w-screen items-center justify-center bg-background text-foreground">
+        <Loader2 size={48} className="animate-spin text-primary" />
+        <p className="ml-4 text-lg">Verifying session...</p>
+      </div>
+    );
+  }
+
+  // If isAuthenticated is false, router.replace('/login') should have already redirected.
+  // This is a fallback or if the page renders before redirect.
+  if (!isAuthenticated) {
+     return null;
+  }
 
   return (
     <div className="flex h-screen antialiased text-foreground bg-background overflow-hidden">
@@ -198,7 +230,7 @@ export default function Home() {
         onSelectChat={handleSelectChat}
         currentUser={currentUser}
         onToggleBotConfigSheet={toggleBotConfigSheet}
-        onToggleUserProfileSheet={toggleUserProfileSheet} // Pass handler
+        onToggleUserProfileSheet={toggleUserProfileSheet}
       />
       <main className="flex-1 flex flex-col">
         {selectedChat ? (
@@ -221,7 +253,7 @@ export default function Home() {
         isOpen={isBotConfigSheetOpen} 
         onOpenChange={setIsBotConfigSheetOpen} 
       />
-      <UserProfileSheet // Render UserProfileSheet
+      <UserProfileSheet
         isOpen={isUserProfileSheetOpen}
         onOpenChange={setIsUserProfileSheetOpen}
         currentUser={currentUser}
