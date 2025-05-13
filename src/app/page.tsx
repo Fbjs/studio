@@ -6,13 +6,17 @@ import { ChatList } from '@/components/chat/ChatList';
 import { ChatWindow } from '@/components/chat/ChatWindow';
 import type { ChatContact, Message, User } from '@/lib/types';
 import { MessageSquareText } from 'lucide-react';
-import { BotConfigSheet } from '@/components/ai/BotConfigSheet'; // Import BotConfigSheet
+import { BotConfigSheet } from '@/components/ai/BotConfigSheet';
+import { UserProfileSheet } from '@/components/profile/UserProfileSheet'; // Import UserProfileSheet
 
 // Mock Data
 const currentUser: User = {
   id: 'currentUser',
   name: 'You',
   avatarUrl: 'https://picsum.photos/seed/currentuser/100/100',
+  planName: 'Pro Tier',
+  tokensUsed: 3500,
+  tokensTotal: 10000,
 };
 
 const mockContacts: ChatContact[] = [
@@ -79,6 +83,7 @@ export default function Home() {
   const [chats, setChats] = useState<ChatContact[]>(mockContacts);
   const [messagesStore, setMessagesStore] = useState<{ [chatId: string]: Message[] }>(mockMessagesStore);
   const [isBotConfigSheetOpen, setIsBotConfigSheetOpen] = useState(false);
+  const [isUserProfileSheetOpen, setIsUserProfileSheetOpen] = useState(false); // State for UserProfileSheet
 
   const selectedChat = useMemo(() => {
     return chats.find(chat => chat.id === selectedChatId) || null;
@@ -152,28 +157,25 @@ export default function Home() {
   useEffect(() => {
     const updatedChatsWithHints = mockContacts.map(contact => ({
       ...contact,
-      avatarUrl: `${contact.avatarUrl}?${new URLSearchParams({"data-ai-hint": "person profile"}).toString()}`
+      avatarUrl: `${contact.avatarUrl.split('?')[0]}?${new URLSearchParams({"data-ai-hint": "person profile"}).toString()}`
     }));
      const updatedCurrentUser = {
       ...currentUser,
-      avatarUrl: `${currentUser.avatarUrl}?${new URLSearchParams({"data-ai-hint": "user profile"}).toString()}`
+      avatarUrl: `${currentUser.avatarUrl.split('?')[0]}?${new URLSearchParams({"data-ai-hint": "user profile"}).toString()}`
     };
     
     const updatedMessagesStoreWithHints = { ...mockMessagesStore };
     for (const chatId in updatedMessagesStoreWithHints) {
         updatedMessagesStoreWithHints[chatId] = updatedMessagesStoreWithHints[chatId].map(msg => {
             if (msg.avatarUrl) {
-                 // Ensure base URL doesn't already have params
                 const baseUrl = msg.avatarUrl.split('?')[0];
                 return { ...msg, avatarUrl: `${baseUrl}?${new URLSearchParams({"data-ai-hint": "chat avatar"}).toString()}` };
             }
             return msg;
         });
     }
-    // This is a bit tricky because currentUser is not in state, but we need to update its URL for UserAvatar
-    // For this demo, we'll update the global const. In a real app, currentUser would be in state or context.
-    currentUser.avatarUrl = updatedCurrentUser.avatarUrl;
 
+    currentUser.avatarUrl = updatedCurrentUser.avatarUrl; // Update global const for UserAvatar in ChatList footer
 
     setChats(updatedChatsWithHints);
     setMessagesStore(updatedMessagesStoreWithHints);
@@ -184,6 +186,10 @@ export default function Home() {
     setIsBotConfigSheetOpen(prev => !prev);
   };
 
+  const toggleUserProfileSheet = () => { // Handler for UserProfileSheet
+    setIsUserProfileSheetOpen(prev => !prev);
+  };
+
   return (
     <div className="flex h-screen antialiased text-foreground bg-background overflow-hidden">
       <ChatList 
@@ -192,6 +198,7 @@ export default function Home() {
         onSelectChat={handleSelectChat}
         currentUser={currentUser}
         onToggleBotConfigSheet={toggleBotConfigSheet}
+        onToggleUserProfileSheet={toggleUserProfileSheet} // Pass handler
       />
       <main className="flex-1 flex flex-col">
         {selectedChat ? (
@@ -213,6 +220,11 @@ export default function Home() {
       <BotConfigSheet 
         isOpen={isBotConfigSheetOpen} 
         onOpenChange={setIsBotConfigSheetOpen} 
+      />
+      <UserProfileSheet // Render UserProfileSheet
+        isOpen={isUserProfileSheetOpen}
+        onOpenChange={setIsUserProfileSheetOpen}
+        currentUser={currentUser}
       />
     </div>
   );

@@ -10,6 +10,7 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Search, Bot } from 'lucide-react';
 import { useState, useMemo } from 'react';
 import { UserAvatar } from './UserAvatar';
+import { cn } from '@/lib/utils';
 
 interface ChatListProps {
   chats: ChatContact[];
@@ -17,23 +18,29 @@ interface ChatListProps {
   onSelectChat: (chatId: string) => void;
   currentUser: User;
   onToggleBotConfigSheet: () => void;
+  onToggleUserProfileSheet: () => void; // New prop
 }
 
-export function ChatList({ chats, selectedChatId, onSelectChat, currentUser, onToggleBotConfigSheet }: ChatListProps) {
+export function ChatList({ 
+  chats, 
+  selectedChatId, 
+  onSelectChat, 
+  currentUser, 
+  onToggleBotConfigSheet,
+  onToggleUserProfileSheet // Destructure new prop
+}: ChatListProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [activeCategory, setActiveCategory] = useState('All');
 
   const filteredAndCategorizedChats = useMemo(() => {
-    let tempChats = [...chats]; // Create a new array to avoid mutating the original prop
+    let tempChats = [...chats]; 
 
-    // Filter by category
     if (activeCategory === 'Unread') {
       tempChats = tempChats.filter(chat => chat.unreadCount && chat.unreadCount > 0);
     } else if (activeCategory !== 'All') {
       tempChats = tempChats.filter(chat => chat.category === activeCategory);
     }
 
-    // Filter by search term
     if (!searchTerm) return tempChats;
     return tempChats.filter(chat =>
       chat.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -94,7 +101,14 @@ export function ChatList({ chats, selectedChatId, onSelectChat, currentUser, onT
       </ScrollArea>
 
       {/* User Profile Footer */}
-      <div className="p-3 border-t border-border flex items-center bg-card">
+      <div 
+        className="p-3 border-t border-border flex items-center bg-card hover:bg-muted/50 cursor-pointer transition-colors duration-150"
+        onClick={onToggleUserProfileSheet} // Make footer clickable
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => e.key === 'Enter' && onToggleUserProfileSheet()}
+        aria-label="Open user profile and settings"
+      >
         <UserAvatar src={currentUser.avatarUrl} alt={currentUser.name} size={36} data-ai-hint="user profile small" />
         <span className="ml-3 font-semibold text-sm truncate">{currentUser.name}</span>
       </div>
