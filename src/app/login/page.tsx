@@ -8,13 +8,17 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { QrCode, LockKeyhole, LogIn } from 'lucide-react';
+import { QrCode, LockKeyhole, LogIn, Smartphone, Users, ArrowRight } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
+type LoginStep = 'initial' | 'qr' | 'phone' | 'password';
+
 export default function LoginPage() {
-  const [step, setStep] = useState<'qr' | 'password'>('qr');
+  const [step, setStep] = useState<LoginStep>('initial');
+  const [phoneNumber, setPhoneNumber] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isNewUserFlow, setIsNewUserFlow] = useState(false); // To differentiate password step context
   const router = useRouter();
   const { toast } = useToast();
 
@@ -24,6 +28,16 @@ export default function LoginPage() {
       router.replace('/');
     }
   }, [router]);
+
+  const handleSelectNewUser = () => {
+    setIsNewUserFlow(true);
+    setStep('qr');
+  };
+
+  const handleSelectExistingUser = () => {
+    setIsNewUserFlow(false);
+    setStep('phone');
+  };
 
   const handleQrScanned = () => {
     setIsLoading(true);
@@ -38,7 +52,29 @@ export default function LoginPage() {
     }, 1500);
   };
 
-  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handlePhoneSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!phoneNumber.trim()) {
+      toast({
+        variant: "destructive",
+        title: "Phone Number Required",
+        description: "Please enter your phone number.",
+      });
+      return;
+    }
+    setIsLoading(true);
+    // Simulate phone number validation
+    setTimeout(() => {
+      setStep('password');
+      setIsLoading(false);
+      toast({
+        title: "Phone Number Entered",
+        description: "Please enter your password.",
+      });
+    }, 1500);
+  };
+
+  const handleLoginOrSetPassword = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!password.trim()) {
       toast({
@@ -49,18 +85,49 @@ export default function LoginPage() {
       return;
     }
     setIsLoading(true);
-    // Simulate password validation and account setup
+    // Simulate password validation / account setup
     setTimeout(() => {
-      // In a real app, here you'd save the password hash, link QR data to user, etc.
-      // For simulation, we just proceed to loading.
       router.push('/loading'); 
-      // setIsLoading(false); // Not needed as we are navigating away
     }, 2000);
   };
+
+  const renderSpinner = () => (
+    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+    </svg>
+  );
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-background p-4">
       <Card className="w-full max-w-md shadow-2xl">
+        {step === 'initial' && (
+          <>
+            <CardHeader className="text-center">
+              <div className="mx-auto mb-4 p-3 bg-primary/10 rounded-full w-fit">
+                <Users size={40} className="text-primary" />
+              </div>
+              <CardTitle className="text-2xl">Welcome to DarkWhisper</CardTitle>
+              <CardDescription>
+                How would you like to log in?
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <Button onClick={handleSelectNewUser} className="w-full" variant="outline">
+                <QrCode size={18} className="mr-2" />
+                New User - Link with QR Code
+              </Button>
+              <Button onClick={handleSelectExistingUser} className="w-full">
+                <LogIn size={18} className="mr-2" />
+                Existing User - Login
+              </Button>
+            </CardContent>
+             <CardFooter className="text-xs text-muted-foreground text-center block pt-4">
+              <p>Choose an option to proceed.</p>
+            </CardFooter>
+          </>
+        )}
+
         {step === 'qr' && (
           <>
             <CardHeader className="text-center">
@@ -90,10 +157,7 @@ export default function LoginPage() {
               >
                 {isLoading ? (
                   <>
-                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
+                    {renderSpinner()}
                     Scanning...
                   </>
                 ) : "Simulate QR Scan"}
@@ -101,6 +165,54 @@ export default function LoginPage() {
             </CardContent>
             <CardFooter className="text-xs text-muted-foreground text-center block">
               <p>This is a simulated QR scan. Click the button to proceed.</p>
+              <Button variant="link" size="sm" onClick={() => setStep('initial')} className="mt-2">Back</Button>
+            </CardFooter>
+          </>
+        )}
+
+        {step === 'phone' && (
+          <>
+            <CardHeader className="text-center">
+              <div className="mx-auto mb-4 p-3 bg-primary/10 rounded-full w-fit">
+                 <Smartphone size={40} className="text-primary" />
+              </div>
+              <CardTitle className="text-2xl">Enter Your Phone Number</CardTitle>
+              <CardDescription>
+                Please enter your registered phone number to continue.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handlePhoneSubmit} className="space-y-6">
+                <div className="space-y-2">
+                  <Label htmlFor="phone">Phone Number</Label>
+                  <Input
+                    id="phone"
+                    type="tel"
+                    value={phoneNumber}
+                    onChange={(e) => setPhoneNumber(e.target.value)}
+                    placeholder="e.g., +1 555 123 4567"
+                    required
+                    className="bg-input"
+                  />
+                </div>
+                <Button type="submit" className="w-full" disabled={isLoading}>
+                  {isLoading ? (
+                    <>
+                      {renderSpinner()}
+                      Verifying...
+                    </>
+                  ) : (
+                    <>
+                      <ArrowRight size={18} className="mr-2" />
+                      Continue
+                    </>
+                  )}
+                </Button>
+              </form>
+            </CardContent>
+             <CardFooter className="text-xs text-muted-foreground text-center block">
+              <p>We'll "verify" your phone number (simulated).</p>
+              <Button variant="link" size="sm" onClick={() => setStep('initial')} className="mt-2">Back</Button>
             </CardFooter>
           </>
         )}
@@ -111,13 +223,18 @@ export default function LoginPage() {
               <div className="mx-auto mb-4 p-3 bg-primary/10 rounded-full w-fit">
                  <LockKeyhole size={40} className="text-primary" />
               </div>
-              <CardTitle className="text-2xl">Set Access Password</CardTitle>
+              <CardTitle className="text-2xl">
+                {isNewUserFlow ? "Set Access Password" : "Enter Your Password"}
+              </CardTitle>
               <CardDescription>
-                Create a password to secure your access to this web client.
+                {isNewUserFlow 
+                  ? "Create a password to secure your access to this web client."
+                  : "Enter your password to access your account."
+                }
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <form onSubmit={handleLogin} className="space-y-6">
+              <form onSubmit={handleLoginOrSetPassword} className="space-y-6">
                 <div className="space-y-2">
                   <Label htmlFor="password">Password</Label>
                   <Input
@@ -133,23 +250,26 @@ export default function LoginPage() {
                 <Button type="submit" className="w-full" disabled={isLoading}>
                   {isLoading ? (
                     <>
-                      <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                      </svg>
-                      Setting Up...
+                      {renderSpinner()}
+                      {isNewUserFlow ? "Setting Up..." : "Logging In..."}
                     </>
                   ) : (
                     <>
                       <LogIn size={18} className="mr-2" />
-                      Confirm Password & Login
+                      {isNewUserFlow ? "Confirm Password & Login" : "Login"}
                     </>
                   )}
                 </Button>
               </form>
             </CardContent>
              <CardFooter className="text-xs text-muted-foreground text-center block">
-              <p>Your password will be "saved" (simulated) for future logins.</p>
+              <p>
+                {isNewUserFlow 
+                  ? "Your password will be 'saved' (simulated) for future logins."
+                  : "Ensure your password is correct."
+                }
+              </p>
+              <Button variant="link" size="sm" onClick={() => setStep(isNewUserFlow ? 'qr' : 'phone')} className="mt-2">Back</Button>
             </CardFooter>
           </>
         )}
