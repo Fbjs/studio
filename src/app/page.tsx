@@ -62,7 +62,7 @@ const mockContacts: ChatContact[] = [
     lastMessage: 'Wondering about the project deadline.',
     lastMessageTimestamp: new Date(Date.now() - 24 * 60 * 60 * 1000), 
     onlineStatus: 'offline',
-    category: initialBotFlowSteps[4], // Scheduled
+    category: initialBotFlowSteps[3], // Qualify
   },
   {
     id: 'contact5',
@@ -71,7 +71,7 @@ const mockContacts: ChatContact[] = [
     lastMessage: 'To the moon!',
     lastMessageTimestamp: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
     onlineStatus: 'offline',
-    category: initialBotFlowSteps[6], // Follow-up
+    category: initialBotFlowSteps[4], // Scheduled
   },
   {
     id: 'contact6',
@@ -86,10 +86,10 @@ const mockContacts: ChatContact[] = [
     id: 'contact7',
     name: 'Gus Fring',
     avatarUrl: 'https://picsum.photos/seed/gus/100/100',
-    lastMessage: 'I need to qualify this lead.',
+    lastMessage: 'Need to follow up on this.',
     lastMessageTimestamp: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000),
     onlineStatus: 'offline',
-    category: initialBotFlowSteps[3], // Qualify
+    category: initialBotFlowSteps[6], // Follow-up
   },
 ];
 
@@ -116,7 +116,7 @@ const mockMessagesStore: { [chatId: string]: Message[] } = {
     { id: 'msg6-1', senderId: 'contact6', content: 'Closing the deal tomorrow.', timestamp: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000), status: 'read', avatarUrl: mockContacts[5].avatarUrl, senderName: mockContacts[5].name },
   ],
   contact7: [
-    { id: 'msg7-1', senderId: 'contact7', content: 'I need to qualify this lead.', timestamp: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000), status: 'read', avatarUrl: mockContacts[6].avatarUrl, senderName: mockContacts[6].name },
+    { id: 'msg7-1', senderId: 'contact7', content: 'Need to follow up on this.', timestamp: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000), status: 'read', avatarUrl: mockContacts[6].avatarUrl, senderName: mockContacts[6].name },
   ],
 };
 

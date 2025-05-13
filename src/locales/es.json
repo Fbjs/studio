@@ -94,9 +94,9 @@
       "greeting": "Saludo",
       "data_capture": "Captación Datos",
       "qualify": "Calificar",
-      "scheduled": "Agendados",
-      "closed": "Cerrados",
-      "follow_up": "Insistencia"
+      "scheduled": "Agendado",
+      "closed": "Cerrado",
+      "follow_up": "Seguimiento"
     },
     "noChatsYet": "Aún no hay chats.",
     "noChatsInCategory": "No hay chats en {category}.",
@@ -138,12 +138,12 @@
       "emptyFlow": "Aún no hay categorías definidas. Agrega categorías para construir el flujo de conversación.",
       "stepDisplay": {
         "new": "Nuevo",
-        "greeting": "Saludo",
-        "data_capture": "Captación Datos",
-        "qualify": "Calificar",
-        "scheduled": "Agendado",
-        "closed": "Cerrado",
-        "follow_up": "Insistencia"
+        "greeting": "Saludo Inicial",
+        "data_capture": "Captura de Datos",
+        "qualify": "Calificar Prospecto",
+        "scheduled": "Cita Agendada",
+        "closed": "Acuerdo Cerrado/Perdido",
+        "follow_up": "Seguimiento Requerido"
       }
     },
     "appointmentScheduling": {

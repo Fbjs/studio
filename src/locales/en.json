@@ -140,10 +140,10 @@
         "new": "New",
         "greeting": "Greeting",
         "data_capture": "Data Capture",
-        "qualify": "Qualify",
-        "scheduled": "Scheduled",
-        "closed": "Closed",
-        "follow_up": "Follow-up"
+        "qualify": "Qualify Lead",
+        "scheduled": "Appointment Scheduled",
+        "closed": "Deal Closed/Lost",
+        "follow_up": "Follow-up Needed"
       }
     },
     "appointmentScheduling": {
