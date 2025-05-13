@@ -23,7 +23,7 @@ const initialCurrentUser: User = {
 
 // Canonical names for initial flow steps/categories
 const initialBotFlowSteps: string[] = [
-  "New", "Greeting", "Data Capture", "Closed", "Scheduled", "Follow-up"
+  "New", "Greeting", "Data Capture", "Qualify", "Scheduled", "Closed", "Follow-up"
 ];
 
 const mockContacts: ChatContact[] = [
@@ -71,7 +71,7 @@ const mockContacts: ChatContact[] = [
     lastMessage: 'To the moon!',
     lastMessageTimestamp: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
     onlineStatus: 'offline',
-    category: initialBotFlowSteps[5], // Follow-up
+    category: initialBotFlowSteps[6], // Follow-up
   },
   {
     id: 'contact6',
@@ -80,7 +80,16 @@ const mockContacts: ChatContact[] = [
     lastMessage: 'Closing the deal tomorrow.',
     lastMessageTimestamp: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
     onlineStatus: 'online',
-    category: initialBotFlowSteps[3], // Closed
+    category: initialBotFlowSteps[5], // Closed
+  },
+   {
+    id: 'contact7',
+    name: 'Gus Fring',
+    avatarUrl: 'https://picsum.photos/seed/gus/100/100',
+    lastMessage: 'I need to qualify this lead.',
+    lastMessageTimestamp: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000),
+    onlineStatus: 'offline',
+    category: initialBotFlowSteps[3], // Qualify
   },
 ];
 
@@ -105,6 +114,9 @@ const mockMessagesStore: { [chatId: string]: Message[] } = {
   ],
   contact6: [
     { id: 'msg6-1', senderId: 'contact6', content: 'Closing the deal tomorrow.', timestamp: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000), status: 'read', avatarUrl: mockContacts[5].avatarUrl, senderName: mockContacts[5].name },
+  ],
+  contact7: [
+    { id: 'msg7-1', senderId: 'contact7', content: 'I need to qualify this lead.', timestamp: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000), status: 'read', avatarUrl: mockContacts[6].avatarUrl, senderName: mockContacts[6].name },
   ],
 };
 
@@ -318,3 +330,4 @@ export default function Home() {
     </div>
   );
 }
+

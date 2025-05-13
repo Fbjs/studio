@@ -93,8 +93,9 @@
       "new": "New",
       "greeting": "Greeting",
       "data_capture": "Data Capture",
-      "closed": "Closed",
+      "qualify": "Qualify",
       "scheduled": "Scheduled",
+      "closed": "Closed",
       "follow_up": "Follow-up"
     },
     "noChatsYet": "No chats yet.",
@@ -139,8 +140,9 @@
         "new": "New",
         "greeting": "Greeting",
         "data_capture": "Data Capture",
-        "closed": "Closed",
+        "qualify": "Qualify",
         "scheduled": "Scheduled",
+        "closed": "Closed",
         "follow_up": "Follow-up"
       }
     },
@@ -294,3 +296,4 @@
     }
   }
 }
+
