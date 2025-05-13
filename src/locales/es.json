@@ -1,0 +1,198 @@
+
+{
+  "app": {
+    "title": "DarkWhisper Chat",
+    "verifyingSession": "Verificando sesión..."
+  },
+  "userProfile": {
+    "title": "Perfil de Usuario",
+    "description": "Administra tu perfil, suscripción y uso de tokens.",
+    "currentPlan": "Plan Actual",
+    "upgradePlan": "Actualizar Plan",
+    "manageSubscription": "Administrar Suscripción",
+    "tokenUsage": "Uso de Tokens",
+    "tokensUsed": "Tokens Usados",
+    "tokensUsedOfTotal": "{tokensUsed} / {tokensTotal}",
+    "tokensUsedPercent": "{percent}% usado",
+    "getMoreTokens": "Obtener Más Tokens",
+    "enterpriseCustomTokens": "Personalizado",
+    "tokenInfoNotAvailable": "La información sobre el uso de tokens no está disponible para el plan actual o se produjo un error.",
+    "logout": "Cerrar Sesión",
+    "logoutSuccessTitle": "Sesión Cerrada",
+    "logoutSuccessDescription": "Has cerrado sesión exitosamente.",
+    "close": "Cerrar",
+    "language": "Idioma",
+    "english": "Inglés",
+    "spanish": "Español"
+  },
+  "login": {
+    "welcome": "Bienvenido a DarkWhisper",
+    "howToLogin": "¿Cómo te gustaría iniciar sesión?",
+    "newUserQR": "Nuevo Usuario - Vincular con Código QR",
+    "existingUserLogin": "Usuario Existente - Iniciar Sesión",
+    "chooseOption": "Elige una opción para continuar.",
+    "scanQRTitle": "Escanear Código QR",
+    "scanQRDescription": "Escanea el código QR con tu WhatsApp para vincular tu cuenta.",
+    "simulateQRScan": "Simular Escaneo QR",
+    "scanning": "Escaneando...",
+    "qrScanInfo": "Este es un escaneo QR simulado. Haz clic en el botón para continuar.",
+    "back": "Volver",
+    "enterPhoneTitle": "Ingresa tu Número de Teléfono",
+    "enterPhoneDescription": "Por favor, ingresa tu número de teléfono registrado para continuar.",
+    "phoneNumberLabel": "Número de Teléfono",
+    "phoneNumberPlaceholder": "ej., +1 555 123 4567",
+    "continue": "Continuar",
+    "verifying": "Verificando...",
+    "phoneVerificationInfo": "\"Verificaremos\" tu número de teléfono (simulado).",
+    "setPasswordTitle": "Establecer Contraseña de Acceso",
+    "enterPasswordTitle": "Ingresa tu Contraseña",
+    "setPasswordDescription": "Crea una contraseña para asegurar tu acceso a este cliente web.",
+    "enterPasswordDescription": "Ingresa tu contraseña para acceder a tu cuenta.",
+    "passwordLabel": "Contraseña",
+    "passwordPlaceholder": "Ingresa tu contraseña",
+    "confirmPasswordAndLogin": "Confirmar Contraseña e Iniciar Sesión",
+    "loginButton": "Iniciar Sesión",
+    "settingUp": "Configurando...",
+    "loggingIn": "Iniciando Sesión...",
+    "setPasswordInfo": "Tu contraseña se 'guardará' (simulada) para futuros inicios de sesión.",
+    "enterPasswordInfo": "Asegúrate de que tu contraseña sea correcta.",
+    "qrScannedToastTitle": "Código QR Escaneado",
+    "qrScannedToastDescription": "Por favor, establece tu contraseña de acceso.",
+    "phoneEnteredToastTitle": "Número de Teléfono Ingresado",
+    "phoneEnteredToastDescription": "Por favor, ingresa tu contraseña.",
+    "phoneRequiredError": "Número de Teléfono Requerido",
+    "phoneRequiredErrorDesc": "Por favor, ingresa tu número de teléfono.",
+    "passwordRequiredError": "Contraseña Requerida",
+    "passwordRequiredErrorDesc": "Por favor, ingresa una contraseña."
+  },
+  "loading": {
+    "title": "Cargando tus Chats",
+    "progressPercent": "{progress}%",
+    "messages": [
+      "Iniciando conexión...",
+      "Conectando a los servidores de WhatsApp...",
+      "Autenticando sesión...",
+      "Obteniendo historial de chats (esto podría tardar un momento)...",
+      "Descifrando mensajes recientes...",
+      "Cargando contactos...",
+      "Preparando tu interfaz de chat...",
+      "Finalizando configuración..."
+    ]
+  },
+  "chat": {
+    "title": "Chats",
+    "searchPlaceholder": "Buscar chats...",
+    "configureAIButtonLabel": "Configurar Bots de IA",
+    "all": "Todos",
+    "work": "Trabajo",
+    "friends": "Amigos",
+    "unread": "No leídos",
+    "noChatsYet": "Aún no hay chats.",
+    "noChatsInCategory": "No hay chats en {category}.",
+    "noChatsMatching": "No hay chats en {category} que coincidan con \"{searchTerm}\".",
+    "userProfileAlt": "Perfil de {name}",
+    "openUserProfileAria": "Abrir perfil de usuario y configuraciones",
+    "online": "En línea",
+    "offline": "Desconectado",
+    "videoCall": "Videollamada",
+    "audioCall": "Llamada de audio",
+    "moreOptions": "Más opciones",
+    "selectChatPrompt": "DarkWhisper Chat",
+    "selectChatMessage": "Selecciona un chat para empezar a enviar mensajes.",
+    "e2eEncryptionNotice": "Tus mensajes están cifrados de extremo a extremo (¡no realmente, esto es una demostración!).",
+    "attachFile": "Adjuntar archivo",
+    "typeMessagePlaceholder": "Escribe un mensaje...",
+    "sendMessage": "Enviar mensaje",
+    "userAvatarAlt": "Avatar de usuario"
+  },
+  "botConfig": {
+    "title": "Configuración del Bot de IA",
+    "description": "Administra y configura bots impulsados por IA para ayudarte con tus conversaciones.",
+    "generalSettings": "Configuración General del Bot",
+    "botNameLabel": "Nombre del Bot",
+    "botNamePlaceholder": "ej., Asistente de Soporte",
+    "botPersonaLabel": "Persona/Instrucciones del Bot",
+    "botPersonaPlaceholder": "Describe el rol del bot y cómo debe comportarse. ej., 'Eres un amigable agente de soporte que ayuda con consultas sobre productos.'",
+    "conversationLinking": "Vinculación de Conversaciones",
+    "linkingDescription": "Especifica qué conversaciones o tipos de consultas debe manejar este bot. (Esta sección es un marcador de posición para una lógica de vinculación más compleja).",
+    "keywordsLabel": "Palabras Clave para Activar el Bot",
+    "keywordsPlaceholder": "ej., ayuda, soporte, precios",
+    "keywordsHelpText": "Palabras clave separadas por coma.",
+    "advancedConfigNotice": "Más configuraciones avanzadas de IA estarán disponibles aquí en el futuro.",
+    "cancel": "Cancelar",
+    "saveConfiguration": "Guardar Configuración"
+  },
+  "subscribe": {
+    "backToChat": "Volver al Chat",
+    "pageTitle": "Elige Tu Plan",
+    "pageDescription": "Planes flexibles para individuos y equipos. Desbloquea más funciones y poder de IA.",
+    "popular": "Popular",
+    "tokens": "Tokens: {tokens}",
+    "currentPlan": "Plan Actual",
+    "choosePlan": "Elegir {planName}",
+    "contactSales": "Contactar a Ventas",
+    "processing": "Procesando...",
+    "enterpriseInquiryTitle": "Consulta Empresarial",
+    "enterpriseInquiryDescription": "¡Gracias por tu interés! Por favor, contacta a nuestro equipo de ventas para una cotización personalizada.",
+    "subscriptionSuccessTitle": "¡Suscrito Exitosamente a {planId}!",
+    "subscriptionSuccessDescription": "Ahora estás en el plan {planId}. Redirigiendo a tus chats...",
+    "paymentInfoTitle": "Información de Pago",
+    "paymentInfoDescription": "Nos asociamos con Stripe y Mercado Pago para el procesamiento seguro de pagos. (Esta es una simulación - no se procesará ningún pago real).",
+    "paymentInfoFooter": "Todas las transacciones son seguras y están encriptadas. Para preguntas sobre facturación, por favor contacta a soporte.",
+    "plans": {
+      "FREE": {
+        "name": "Gratis",
+        "price": "$0",
+        "priceDetails": "Para siempre",
+        "tokens": "10 (Una vez)",
+        "features": [
+          "Funcionalidad de chat básica",
+          "Interacciones limitadas con bots de IA",
+          "Cifrado de extremo a extremo (simulado)"
+        ],
+        "tierHighlight": ""
+      },
+      "STARTER": {
+        "name": "Starter",
+        "price": "$10",
+        "priceDetails": "/ mes",
+        "tokens": "5,000 / mes",
+        "features": [
+          "Todas las funciones GRATIS",
+          "Acceso estándar a bots de IA",
+          "Hasta 1 configuración de bot personalizada",
+          "Historial de mensajes ampliado"
+        ],
+        "tierHighlight": "Mejor valor para individuos"
+      },
+      "BUSINESS": {
+        "name": "Business",
+        "price": "$30",
+        "priceDetails": "/ mes",
+        "tokens": "20,000 / mes",
+        "features": [
+          "Todas las funciones STARTER",
+          "Capacidades avanzadas de bots de IA",
+          "Hasta 5 configuraciones de bot personalizadas",
+          "Soporte prioritario",
+          "Funciones de equipo (próximamente)"
+        ],
+        "tierHighlight": "Perfecto para equipos pequeños"
+      },
+      "ENTERPRISE": {
+        "name": "Enterprise",
+        "price": "Personalizado",
+        "priceDetails": "",
+        "tokens": "Ilimitado / Personalizado",
+        "features": [
+          "Todas las funciones BUSINESS",
+          "Ajuste fino dedicado del modelo de IA",
+          "Configuraciones de bot ilimitadas",
+          "Gestor de cuentas dedicado y SLA",
+          "Integraciones personalizadas"
+        ],
+        "tierHighlight": "Adaptado para grandes organizaciones"
+      }
+    }
+  }
+}

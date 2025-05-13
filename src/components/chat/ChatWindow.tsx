@@ -1,3 +1,4 @@
+
 "use client";
 
 import type { ChatContact, Message, User } from '@/lib/types';
@@ -8,6 +9,7 @@ import { UserAvatar } from './UserAvatar';
 import { MoreVertical, Phone, Video } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useEffect, useRef } from 'react';
+import { useTranslation } from '@/hooks/useTranslation';
 
 interface ChatWindowProps {
   chat: ChatContact;
@@ -19,6 +21,7 @@ interface ChatWindowProps {
 export function ChatWindow({ chat, messages, currentUser, onSendMessage }: ChatWindowProps) {
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const viewportRef = useRef<HTMLDivElement>(null);
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (viewportRef.current) {
@@ -35,22 +38,22 @@ export function ChatWindow({ chat, messages, currentUser, onSendMessage }: ChatW
           <div className="ml-3">
             <h2 className="font-semibold text-base">{chat.name}</h2>
             <p className="text-xs text-muted-foreground">
-              {chat.onlineStatus === 'online' ? 'Online' : chat.onlineStatus || 'Offline'}
+              {chat.onlineStatus === 'online' ? t('chat.online') : chat.onlineStatus || t('chat.offline')}
             </p>
           </div>
         </div>
         <div className="flex items-center gap-2">
           <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-accent">
             <Video size={20} />
-            <span className="sr-only">Video call</span>
+            <span className="sr-only">{t('chat.videoCall')}</span>
           </Button>
           <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-accent">
             <Phone size={20} />
-            <span className="sr-only">Audio call</span>
+            <span className="sr-only">{t('chat.audioCall')}</span>
           </Button>
           <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-accent">
             <MoreVertical size={20} />
-            <span className="sr-only">More options</span>
+            <span className="sr-only">{t('chat.moreOptions')}</span>
           </Button>
         </div>
       </header>

@@ -9,6 +9,7 @@ import type { ChatContact, Message, User, PlanName } from '@/lib/types';
 import { MessageSquareText, Loader2 } from 'lucide-react';
 import { BotConfigSheet } from '@/components/ai/BotConfigSheet';
 import { UserProfileSheet } from '@/components/profile/UserProfileSheet';
+import { useTranslation } from '@/hooks/useTranslation';
 
 // Initial Mock Data for currentUser
 const initialCurrentUser: User = {
@@ -26,7 +27,7 @@ const mockContacts: ChatContact[] = [
     name: 'Alice Wonderland',
     avatarUrl: 'https://picsum.photos/seed/alice/100/100',
     lastMessage: "Hey, how's it going?",
-    lastMessageTimestamp: new Date(Date.now() - 5 * 60 * 1000), // 5 minutes ago
+    lastMessageTimestamp: new Date(Date.now() - 5 * 60 * 1000), 
     unreadCount: 2,
     onlineStatus: 'online',
     category: 'Work',
@@ -36,7 +37,7 @@ const mockContacts: ChatContact[] = [
     name: 'Bob The Builder',
     avatarUrl: 'https://picsum.photos/seed/bob/100/100',
     lastMessage: 'Can we fix it? Yes, we can!',
-    lastMessageTimestamp: new Date(Date.now() - 30 * 60 * 1000), // 30 minutes ago
+    lastMessageTimestamp: new Date(Date.now() - 30 * 60 * 1000), 
     onlineStatus: 'Last seen 15m ago',
     category: 'Friends',
   },
@@ -45,7 +46,7 @@ const mockContacts: ChatContact[] = [
     name: 'Charlie Brown',
     avatarUrl: 'https://picsum.photos/seed/charlie/100/100',
     lastMessage: 'Good grief!',
-    lastMessageTimestamp: new Date(Date.now() - 2 * 60 * 60 * 1000), // 2 hours ago
+    lastMessageTimestamp: new Date(Date.now() - 2 * 60 * 60 * 1000), 
     unreadCount: 5,
     category: 'Work',
   },
@@ -54,7 +55,7 @@ const mockContacts: ChatContact[] = [
     name: 'Diana Prince',
     avatarUrl: 'https://picsum.photos/seed/diana/100/100',
     lastMessage: 'Wondering about the project deadline.',
-    lastMessageTimestamp: new Date(Date.now() - 24 * 60 * 60 * 1000), // Yesterday
+    lastMessageTimestamp: new Date(Date.now() - 24 * 60 * 60 * 1000), 
     onlineStatus: 'offline',
     category: 'Friends',
   },
@@ -81,6 +82,7 @@ const mockMessagesStore: { [chatId: string]: Message[] } = {
 
 export default function Home() {
   const router = useRouter();
+  const { t } = useTranslation();
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   const [currentUser, setCurrentUser] = useState<User>(initialCurrentUser);
 
@@ -95,51 +97,28 @@ export default function Home() {
     if (authStatus === 'true') {
       setIsAuthenticated(true);
 
-      // Check for plan updates from localStorage (simulated subscription change)
       const storedPlan = localStorage.getItem('currentUserPlan') as PlanName | null;
       const storedTokensTotal = localStorage.getItem('currentUserTokensTotal');
       const storedTokensUsed = localStorage.getItem('currentUserTokensUsed');
 
-      // Update currentUser state if plan info is found in localStorage
       setCurrentUser(prevUser => {
         let updatedUser = { ...prevUser };
-
         if (storedPlan) {
           updatedUser.planName = storedPlan;
-          // Reset tokens based on new plan, unless specific values are stored
-          updatedUser.tokensUsed = 0; // Typically reset used tokens on plan change
-
+          updatedUser.tokensUsed = 0; 
           switch (storedPlan) {
-            case 'FREE':
-              updatedUser.tokensTotal = 10;
-              break;
-            case 'STARTER':
-              updatedUser.tokensTotal = 5000;
-              break;
-            case 'BUSINESS':
-              updatedUser.tokensTotal = 20000;
-              break;
-            case 'ENTERPRISE':
-              // Enterprise might be custom, keep existing or set to a high number for demo
-              updatedUser.tokensTotal = prevUser.tokensTotal; // Or specific logic
-              break;
-            default:
-              updatedUser.tokensTotal = 10; // Fallback to FREE plan tokens
+            case 'FREE': updatedUser.tokensTotal = 10; break;
+            case 'STARTER': updatedUser.tokensTotal = 5000; break;
+            case 'BUSINESS': updatedUser.tokensTotal = 20000; break;
+            default: updatedUser.tokensTotal = 10;
           }
         }
-
-        if (storedTokensTotal) {
-          updatedUser.tokensTotal = parseInt(storedTokensTotal, 10);
-        }
-        if (storedTokensUsed) {
-          updatedUser.tokensUsed = parseInt(storedTokensUsed, 10);
-        }
+        if (storedTokensTotal) updatedUser.tokensTotal = parseInt(storedTokensTotal, 10);
+        if (storedTokensUsed) updatedUser.tokensUsed = parseInt(storedTokensUsed, 10);
         
-        // Ensure avatar URL has AI hint
         if (updatedUser.avatarUrl && !updatedUser.avatarUrl.includes('data-ai-hint')) {
            updatedUser.avatarUrl = `${updatedUser.avatarUrl.split('?')[0]}?${new URLSearchParams({"data-ai-hint": "user profile"}).toString()}`;
         }
-
         return updatedUser;
       });
 
@@ -192,12 +171,10 @@ export default function Home() {
       ).sort((a, b) => b.lastMessageTimestamp.getTime() - a.lastMessageTimestamp.getTime())
     );
 
-    // Simulate token usage
     setCurrentUser(prev => ({
       ...prev,
-      tokensUsed: (prev.tokensUsed || 0) + 1 // Increment token for each message sent
+      tokensUsed: (prev.tokensUsed || 0) + 1 
     }));
-
 
     setTimeout(() => {
       const contact = chats.find(c => c.id === selectedChatId);
@@ -205,7 +182,7 @@ export default function Home() {
         const replyMessage: Message = {
           id: `reply-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`,
           senderId: contact.id,
-          content: `Okay, I got: "${content.substring(0, 20)}..."`,
+          content: `Okay, I got: "${content.substring(0, 20)}..."`, // This response should be translated or generic if needed
           timestamp: new Date(),
           status: 'read',
           avatarUrl: contact.avatarUrl,
@@ -259,7 +236,7 @@ export default function Home() {
     return (
       <div className="flex h-screen w-screen items-center justify-center bg-background text-foreground">
         <Loader2 size={48} className="animate-spin text-primary" />
-        <p className="ml-4 text-lg">Verifying session...</p>
+        <p className="ml-4 text-lg">{t('app.verifyingSession')}</p>
       </div>
     );
   }
@@ -289,9 +266,9 @@ export default function Home() {
         ) : (
           <div className="flex-1 flex flex-col items-center justify-center text-muted-foreground p-8 text-center">
             <MessageSquareText size={64} className="mb-4 opacity-50" />
-            <h2 className="text-2xl font-semibold mb-2">DarkWhisper Chat</h2>
-            <p className="text-lg">Select a chat to start messaging.</p>
-            <p className="mt-4 text-sm">Your messages are end-to-end encrypted (not really, this is a demo!).</p>
+            <h2 className="text-2xl font-semibold mb-2">{t('chat.selectChatPrompt')}</h2>
+            <p className="text-lg">{t('chat.selectChatMessage')}</p>
+            <p className="mt-4 text-sm">{t('chat.e2eEncryptionNotice')}</p>
           </div>
         )}
       </main>

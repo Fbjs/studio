@@ -1,0 +1,198 @@
+
+{
+  "app": {
+    "title": "DarkWhisper Chat",
+    "verifyingSession": "Verifying session..."
+  },
+  "userProfile": {
+    "title": "User Profile",
+    "description": "Manage your profile, subscription, and token usage.",
+    "currentPlan": "Current Plan",
+    "upgradePlan": "Upgrade Plan",
+    "manageSubscription": "Manage Subscription",
+    "tokenUsage": "Token Usage",
+    "tokensUsed": "Tokens Used",
+    "tokensUsedOfTotal": "{tokensUsed} / {tokensTotal}",
+    "tokensUsedPercent": "{percent}% used",
+    "getMoreTokens": "Get More Tokens",
+    "enterpriseCustomTokens": "Custom",
+    "tokenInfoNotAvailable": "Token usage information not available for the current plan or an error occurred.",
+    "logout": "Log Out",
+    "logoutSuccessTitle": "Logged Out",
+    "logoutSuccessDescription": "You have been successfully logged out.",
+    "close": "Close",
+    "language": "Language",
+    "english": "English",
+    "spanish": "Spanish"
+  },
+  "login": {
+    "welcome": "Welcome to DarkWhisper",
+    "howToLogin": "How would you like to log in?",
+    "newUserQR": "New User - Link with QR Code",
+    "existingUserLogin": "Existing User - Login",
+    "chooseOption": "Choose an option to proceed.",
+    "scanQRTitle": "Scan QR Code",
+    "scanQRDescription": "Scan the QR code with your WhatsApp to link your account.",
+    "simulateQRScan": "Simulate QR Scan",
+    "scanning": "Scanning...",
+    "qrScanInfo": "This is a simulated QR scan. Click the button to proceed.",
+    "back": "Back",
+    "enterPhoneTitle": "Enter Your Phone Number",
+    "enterPhoneDescription": "Please enter your registered phone number to continue.",
+    "phoneNumberLabel": "Phone Number",
+    "phoneNumberPlaceholder": "e.g., +1 555 123 4567",
+    "continue": "Continue",
+    "verifying": "Verifying...",
+    "phoneVerificationInfo": "We'll \"verify\" your phone number (simulated).",
+    "setPasswordTitle": "Set Access Password",
+    "enterPasswordTitle": "Enter Your Password",
+    "setPasswordDescription": "Create a password to secure your access to this web client.",
+    "enterPasswordDescription": "Enter your password to access your account.",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "Enter your password",
+    "confirmPasswordAndLogin": "Confirm Password & Login",
+    "loginButton": "Login",
+    "settingUp": "Setting Up...",
+    "loggingIn": "Logging In...",
+    "setPasswordInfo": "Your password will be 'saved' (simulated) for future logins.",
+    "enterPasswordInfo": "Ensure your password is correct.",
+    "qrScannedToastTitle": "QR Code Scanned",
+    "qrScannedToastDescription": "Please set your access password.",
+    "phoneEnteredToastTitle": "Phone Number Entered",
+    "phoneEnteredToastDescription": "Please enter your password.",
+    "phoneRequiredError": "Phone Number Required",
+    "phoneRequiredErrorDesc": "Please enter your phone number.",
+    "passwordRequiredError": "Password Required",
+    "passwordRequiredErrorDesc": "Please enter a password."
+  },
+  "loading": {
+    "title": "Loading Your Chats",
+    "progressPercent": "{progress}%",
+    "messages": [
+      "Initializing connection...",
+      "Connecting to WhatsApp servers...",
+      "Authenticating session...",
+      "Fetching chat history (this might take a moment)...",
+      "Decrypting recent messages...",
+      "Loading contacts...",
+      "Preparing your chat interface...",
+      "Finalizing setup..."
+    ]
+  },
+  "chat": {
+    "title": "Chats",
+    "searchPlaceholder": "Search chats...",
+    "configureAIButtonLabel": "Configure AI Bots",
+    "all": "All",
+    "work": "Work",
+    "friends": "Friends",
+    "unread": "Unread",
+    "noChatsYet": "No chats yet.",
+    "noChatsInCategory": "No chats in {category}",
+    "noChatsMatching": "No chats in {category} matching \"{searchTerm}\".",
+    "userProfileAlt": "{name}'s profile",
+    "openUserProfileAria": "Open user profile and settings",
+    "online": "Online",
+    "offline": "Offline",
+    "videoCall": "Video call",
+    "audioCall": "Audio call",
+    "moreOptions": "More options",
+    "selectChatPrompt": "DarkWhisper Chat",
+    "selectChatMessage": "Select a chat to start messaging.",
+    "e2eEncryptionNotice": "Your messages are end-to-end encrypted (not really, this is a demo!).",
+    "attachFile": "Attach file",
+    "typeMessagePlaceholder": "Type a message...",
+    "sendMessage": "Send message",
+    "userAvatarAlt": "User Avatar"
+  },
+  "botConfig": {
+    "title": "AI Bot Configuration",
+    "description": "Manage and set up AI-powered bots to assist with your conversations.",
+    "generalSettings": "General Bot Settings",
+    "botNameLabel": "Bot Name",
+    "botNamePlaceholder": "e.g., Support Helper",
+    "botPersonaLabel": "Bot Persona/Instructions",
+    "botPersonaPlaceholder": "Describe the bot's role and how it should behave. e.g., 'You are a friendly support agent that helps with product queries.'",
+    "conversationLinking": "Conversation Linking",
+    "linkingDescription": "Specify which conversations or types of queries this bot should handle. (This section is a placeholder for more complex linking logic).",
+    "keywordsLabel": "Keywords to Trigger Bot",
+    "keywordsPlaceholder": "e.g., help, support, pricing",
+    "keywordsHelpText": "Comma-separated keywords.",
+    "advancedConfigNotice": "More advanced AI configurations will be available here in the future.",
+    "cancel": "Cancel",
+    "saveConfiguration": "Save Configuration"
+  },
+  "subscribe": {
+    "backToChat": "Back to Chat",
+    "pageTitle": "Choose Your Plan",
+    "pageDescription": "Flexible plans for individuals and teams. Unlock more features and AI power.",
+    "popular": "Popular",
+    "tokens": "Tokens: {tokens}",
+    "currentPlan": "Current Plan",
+    "choosePlan": "Choose {planName}",
+    "contactSales": "Contact Sales",
+    "processing": "Processing...",
+    "enterpriseInquiryTitle": "Enterprise Inquiry",
+    "enterpriseInquiryDescription": "Thank you for your interest! Please contact our sales team for a custom quote.",
+    "subscriptionSuccessTitle": "Successfully Subscribed to {planId}!",
+    "subscriptionSuccessDescription": "You are now on the {planId} plan. Redirecting to your chats...",
+    "paymentInfoTitle": "Payment Information",
+    "paymentInfoDescription": "We partner with Stripe and Mercado Pago for secure payment processing. (This is a simulation - no actual payment will be processed).",
+    "paymentInfoFooter": "All transactions are secured and encrypted. For questions about billing, please contact support.",
+    "plans": {
+      "FREE": {
+        "name": "Free",
+        "price": "$0",
+        "priceDetails": "Forever",
+        "tokens": "10 (One-time)",
+        "features": [
+          "Basic chat functionality",
+          "Limited AI bot interactions",
+          "End-to-end encryption (simulated)"
+        ],
+        "tierHighlight": ""
+      },
+      "STARTER": {
+        "name": "Starter",
+        "price": "$10",
+        "priceDetails": "/ month",
+        "tokens": "5,000 / month",
+        "features": [
+          "All FREE features",
+          "Standard AI bot access",
+          "Up to 1 custom bot configuration",
+          "Expanded message history"
+        ],
+        "tierHighlight": "Best value for individuals"
+      },
+      "BUSINESS": {
+        "name": "Business",
+        "price": "$30",
+        "priceDetails": "/ month",
+        "tokens": "20,000 / month",
+        "features": [
+          "All STARTER features",
+          "Advanced AI bot capabilities",
+          "Up to 5 custom bot configurations",
+          "Priority support",
+          "Team features (coming soon)"
+        ],
+        "tierHighlight": "Perfect for small teams"
+      },
+      "ENTERPRISE": {
+        "name": "Enterprise",
+        "price": "Custom",
+        "priceDetails": "",
+        "tokens": "Unlimited / Custom",
+        "features": [
+          "All BUSINESS features",
+          "Dedicated AI model fine-tuning",
+          "Unlimited bot configurations",
+          "Dedicated account manager & SLA",
+          "Custom integrations"
+        ],
+        "tierHighlight": "Tailored for large organizations"
+      }
+    }
+  }
+}

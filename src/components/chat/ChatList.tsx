@@ -11,6 +11,8 @@ import { Search, Bot } from 'lucide-react';
 import { useState, useMemo } from 'react';
 import { UserAvatar } from './UserAvatar';
 import { cn } from '@/lib/utils';
+import { useTranslation } from '@/hooks/useTranslation';
+
 
 interface ChatListProps {
   chats: ChatContact[];
@@ -18,7 +20,7 @@ interface ChatListProps {
   onSelectChat: (chatId: string) => void;
   currentUser: User;
   onToggleBotConfigSheet: () => void;
-  onToggleUserProfileSheet: () => void; // New prop
+  onToggleUserProfileSheet: () => void; 
 }
 
 export function ChatList({ 
@@ -27,10 +29,11 @@ export function ChatList({
   onSelectChat, 
   currentUser, 
   onToggleBotConfigSheet,
-  onToggleUserProfileSheet // Destructure new prop
+  onToggleUserProfileSheet 
 }: ChatListProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [activeCategory, setActiveCategory] = useState('All');
+  const { t } = useTranslation();
 
   const filteredAndCategorizedChats = useMemo(() => {
     let tempChats = [...chats]; 
@@ -38,6 +41,8 @@ export function ChatList({
     if (activeCategory === 'Unread') {
       tempChats = tempChats.filter(chat => chat.unreadCount && chat.unreadCount > 0);
     } else if (activeCategory !== 'All') {
+      // Assuming category might be translated, compare against original or translated values
+      // For simplicity, this example assumes category values ('Work', 'Friends') are not translated themselves for filtering
       tempChats = tempChats.filter(chat => chat.category === activeCategory);
     }
 
@@ -52,15 +57,15 @@ export function ChatList({
       {/* Header Section */}
       <div className="p-4 border-b border-border">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-semibold">Chats</h2>
-          <Button onClick={onToggleBotConfigSheet} variant="ghost" size="icon" aria-label="Configure AI Bots">
+          <h2 className="text-xl font-semibold">{t('chat.title')}</h2>
+          <Button onClick={onToggleBotConfigSheet} variant="ghost" size="icon" aria-label={t('chat.configureAIButtonLabel')}>
             <Bot size={20} className="text-muted-foreground hover:text-accent" />
           </Button>
         </div>
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input 
-            placeholder="Search chats..." 
+            placeholder={t('chat.searchPlaceholder')}
             className="pl-10 bg-background focus:bg-input"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
@@ -72,10 +77,10 @@ export function ChatList({
       <div className="px-4 py-2 border-b border-border">
         <Tabs value={activeCategory} onValueChange={setActiveCategory} className="w-full">
           <TabsList className="grid w-full grid-cols-4 h-9">
-            <TabsTrigger value="All" className="text-xs px-2">All</TabsTrigger>
-            <TabsTrigger value="Work" className="text-xs px-2">Work</TabsTrigger>
-            <TabsTrigger value="Friends" className="text-xs px-2">Friends</TabsTrigger>
-            <TabsTrigger value="Unread" className="text-xs px-2">Unread</TabsTrigger>
+            <TabsTrigger value="All" className="text-xs px-2">{t('chat.all')}</TabsTrigger>
+            <TabsTrigger value="Work" className="text-xs px-2">{t('chat.work')}</TabsTrigger>
+            <TabsTrigger value="Friends" className="text-xs px-2">{t('chat.friends')}</TabsTrigger>
+            <TabsTrigger value="Unread" className="text-xs px-2">{t('chat.unread')}</TabsTrigger>
           </TabsList>
         </Tabs>
       </div>
@@ -94,7 +99,10 @@ export function ChatList({
             ))
           ) : (
             <p className="p-4 text-center text-muted-foreground">
-              {activeCategory === "All" && !searchTerm ? "No chats yet." : `No chats in ${activeCategory.toLowerCase()} ${searchTerm ? `matching "${searchTerm}"` : ""}.`}
+              {activeCategory === "All" && !searchTerm 
+                ? t('chat.noChatsYet') 
+                : t('chat.noChatsMatching', { category: t(`chat.${activeCategory.toLowerCase()}` as any), searchTerm: searchTerm })
+              }
             </p>
           )}
         </div>
@@ -103,13 +111,13 @@ export function ChatList({
       {/* User Profile Footer */}
       <div 
         className="p-3 border-t border-border flex items-center bg-card hover:bg-muted/50 cursor-pointer transition-colors duration-150"
-        onClick={onToggleUserProfileSheet} // Make footer clickable
+        onClick={onToggleUserProfileSheet} 
         role="button"
         tabIndex={0}
         onKeyDown={(e) => e.key === 'Enter' && onToggleUserProfileSheet()}
-        aria-label="Open user profile and settings"
+        aria-label={t('chat.openUserProfileAria')}
       >
-        <UserAvatar src={currentUser.avatarUrl} alt={currentUser.name} size={36} data-ai-hint="user profile small" />
+        <UserAvatar src={currentUser.avatarUrl} alt={t('chat.userProfileAlt', { name: currentUser.name })} size={36} data-ai-hint="user profile small" />
         <span className="ml-3 font-semibold text-sm truncate">{currentUser.name}</span>
       </div>
     </div>

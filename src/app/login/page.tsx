@@ -10,6 +10,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { QrCode, LockKeyhole, LogIn, Smartphone, Users, ArrowRight } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useTranslation } from '@/hooks/useTranslation';
 
 type LoginStep = 'initial' | 'qr' | 'phone' | 'password';
 
@@ -18,11 +19,11 @@ export default function LoginPage() {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [isNewUserFlow, setIsNewUserFlow] = useState(false); // To differentiate password step context
+  const [isNewUserFlow, setIsNewUserFlow] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
+  const { t } = useTranslation();
 
-  // Redirect if already "authenticated" (simulated)
   useEffect(() => {
     if (localStorage.getItem('isAuthenticated') === 'true') {
       router.replace('/');
@@ -41,13 +42,12 @@ export default function LoginPage() {
 
   const handleQrScanned = () => {
     setIsLoading(true);
-    // Simulate QR scan processing
     setTimeout(() => {
       setStep('password');
       setIsLoading(false);
       toast({
-        title: "QR Code Scanned",
-        description: "Please set your access password.",
+        title: t('login.qrScannedToastTitle'),
+        description: t('login.qrScannedToastDescription'),
       });
     }, 1500);
   };
@@ -57,19 +57,18 @@ export default function LoginPage() {
     if (!phoneNumber.trim()) {
       toast({
         variant: "destructive",
-        title: "Phone Number Required",
-        description: "Please enter your phone number.",
+        title: t('login.phoneRequiredError'),
+        description: t('login.phoneRequiredErrorDesc'),
       });
       return;
     }
     setIsLoading(true);
-    // Simulate phone number validation
     setTimeout(() => {
       setStep('password');
       setIsLoading(false);
       toast({
-        title: "Phone Number Entered",
-        description: "Please enter your password.",
+        title: t('login.phoneEnteredToastTitle'),
+        description: t('login.phoneEnteredToastDescription'),
       });
     }, 1500);
   };
@@ -79,13 +78,12 @@ export default function LoginPage() {
     if (!password.trim()) {
       toast({
         variant: "destructive",
-        title: "Password Required",
-        description: "Please enter a password.",
+        title: t('login.passwordRequiredError'),
+        description: t('login.passwordRequiredErrorDesc'),
       });
       return;
     }
     setIsLoading(true);
-    // Simulate password validation / account setup
     setTimeout(() => {
       router.push('/loading'); 
     }, 2000);
@@ -107,23 +105,23 @@ export default function LoginPage() {
               <div className="mx-auto mb-4 p-3 bg-primary/10 rounded-full w-fit">
                 <Users size={40} className="text-primary" />
               </div>
-              <CardTitle className="text-2xl">Welcome to DarkWhisper</CardTitle>
+              <CardTitle className="text-2xl">{t('login.welcome')}</CardTitle>
               <CardDescription>
-                How would you like to log in?
+                {t('login.howToLogin')}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <Button onClick={handleSelectNewUser} className="w-full" variant="outline">
                 <QrCode size={18} className="mr-2" />
-                New User - Link with QR Code
+                {t('login.newUserQR')}
               </Button>
               <Button onClick={handleSelectExistingUser} className="w-full">
                 <LogIn size={18} className="mr-2" />
-                Existing User - Login
+                {t('login.existingUserLogin')}
               </Button>
             </CardContent>
              <CardFooter className="text-xs text-muted-foreground text-center block pt-4">
-              <p>Choose an option to proceed.</p>
+              <p>{t('login.chooseOption')}</p>
             </CardFooter>
           </>
         )}
@@ -134,9 +132,9 @@ export default function LoginPage() {
               <div className="mx-auto mb-4 p-3 bg-primary/10 rounded-full w-fit">
                 <QrCode size={40} className="text-primary" />
               </div>
-              <CardTitle className="text-2xl">Scan QR Code</CardTitle>
+              <CardTitle className="text-2xl">{t('login.scanQRTitle')}</CardTitle>
               <CardDescription>
-                Scan the QR code with your WhatsApp to link your account.
+                {t('login.scanQRDescription')}
               </CardDescription>
             </CardHeader>
             <CardContent className="flex flex-col items-center space-y-6">
@@ -158,14 +156,14 @@ export default function LoginPage() {
                 {isLoading ? (
                   <>
                     {renderSpinner()}
-                    Scanning...
+                    {t('login.scanning')}
                   </>
-                ) : "Simulate QR Scan"}
+                ) : t('login.simulateQRScan')}
               </Button>
             </CardContent>
             <CardFooter className="text-xs text-muted-foreground text-center block">
-              <p>This is a simulated QR scan. Click the button to proceed.</p>
-              <Button variant="link" size="sm" onClick={() => setStep('initial')} className="mt-2">Back</Button>
+              <p>{t('login.qrScanInfo')}</p>
+              <Button variant="link" size="sm" onClick={() => setStep('initial')} className="mt-2">{t('login.back')}</Button>
             </CardFooter>
           </>
         )}
@@ -176,21 +174,21 @@ export default function LoginPage() {
               <div className="mx-auto mb-4 p-3 bg-primary/10 rounded-full w-fit">
                  <Smartphone size={40} className="text-primary" />
               </div>
-              <CardTitle className="text-2xl">Enter Your Phone Number</CardTitle>
+              <CardTitle className="text-2xl">{t('login.enterPhoneTitle')}</CardTitle>
               <CardDescription>
-                Please enter your registered phone number to continue.
+                {t('login.enterPhoneDescription')}
               </CardDescription>
             </CardHeader>
             <CardContent>
               <form onSubmit={handlePhoneSubmit} className="space-y-6">
                 <div className="space-y-2">
-                  <Label htmlFor="phone">Phone Number</Label>
+                  <Label htmlFor="phone">{t('login.phoneNumberLabel')}</Label>
                   <Input
                     id="phone"
                     type="tel"
                     value={phoneNumber}
                     onChange={(e) => setPhoneNumber(e.target.value)}
-                    placeholder="e.g., +1 555 123 4567"
+                    placeholder={t('login.phoneNumberPlaceholder')}
                     required
                     className="bg-input"
                   />
@@ -199,20 +197,20 @@ export default function LoginPage() {
                   {isLoading ? (
                     <>
                       {renderSpinner()}
-                      Verifying...
+                      {t('login.verifying')}
                     </>
                   ) : (
                     <>
                       <ArrowRight size={18} className="mr-2" />
-                      Continue
+                      {t('login.continue')}
                     </>
                   )}
                 </Button>
               </form>
             </CardContent>
              <CardFooter className="text-xs text-muted-foreground text-center block">
-              <p>We'll "verify" your phone number (simulated).</p>
-              <Button variant="link" size="sm" onClick={() => setStep('initial')} className="mt-2">Back</Button>
+              <p>{t('login.phoneVerificationInfo')}</p>
+              <Button variant="link" size="sm" onClick={() => setStep('initial')} className="mt-2">{t('login.back')}</Button>
             </CardFooter>
           </>
         )}
@@ -224,25 +222,25 @@ export default function LoginPage() {
                  <LockKeyhole size={40} className="text-primary" />
               </div>
               <CardTitle className="text-2xl">
-                {isNewUserFlow ? "Set Access Password" : "Enter Your Password"}
+                {isNewUserFlow ? t('login.setPasswordTitle') : t('login.enterPasswordTitle')}
               </CardTitle>
               <CardDescription>
                 {isNewUserFlow 
-                  ? "Create a password to secure your access to this web client."
-                  : "Enter your password to access your account."
+                  ? t('login.setPasswordDescription')
+                  : t('login.enterPasswordDescription')
                 }
               </CardDescription>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleLoginOrSetPassword} className="space-y-6">
                 <div className="space-y-2">
-                  <Label htmlFor="password">Password</Label>
+                  <Label htmlFor="password">{t('login.passwordLabel')}</Label>
                   <Input
                     id="password"
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Enter your password"
+                    placeholder={t('login.passwordPlaceholder')}
                     required
                     className="bg-input"
                   />
@@ -251,12 +249,12 @@ export default function LoginPage() {
                   {isLoading ? (
                     <>
                       {renderSpinner()}
-                      {isNewUserFlow ? "Setting Up..." : "Logging In..."}
+                      {isNewUserFlow ? t('login.settingUp') : t('login.loggingIn')}
                     </>
                   ) : (
                     <>
                       <LogIn size={18} className="mr-2" />
-                      {isNewUserFlow ? "Confirm Password & Login" : "Login"}
+                      {isNewUserFlow ? t('login.confirmPasswordAndLogin') : t('login.loginButton')}
                     </>
                   )}
                 </Button>
@@ -265,11 +263,11 @@ export default function LoginPage() {
              <CardFooter className="text-xs text-muted-foreground text-center block">
               <p>
                 {isNewUserFlow 
-                  ? "Your password will be 'saved' (simulated) for future logins."
-                  : "Ensure your password is correct."
+                  ? t('login.setPasswordInfo')
+                  : t('login.enterPasswordInfo')
                 }
               </p>
-              <Button variant="link" size="sm" onClick={() => setStep(isNewUserFlow ? 'qr' : 'phone')} className="mt-2">Back</Button>
+              <Button variant="link" size="sm" onClick={() => setStep(isNewUserFlow ? 'qr' : 'phone')} className="mt-2">{t('login.back')}</Button>
             </CardFooter>
           </>
         )}

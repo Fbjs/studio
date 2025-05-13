@@ -15,10 +15,19 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { UserAvatar } from "@/components/chat/UserAvatar";
-import { Award, Coins, LogOut, ArrowRight } from "lucide-react";
+import { Award, Coins, LogOut, ArrowRight, Languages } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
+import { useTranslation } from "@/hooks/useTranslation";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
 
 interface UserProfileSheetProps {
   isOpen: boolean;
@@ -29,6 +38,7 @@ interface UserProfileSheetProps {
 export function UserProfileSheet({ isOpen, onOpenChange, currentUser }: UserProfileSheetProps) {
   const router = useRouter();
   const { toast } = useToast();
+  const { t, changeLanguage, locale } = useTranslation();
 
   const tokensUsed = currentUser.tokensUsed || 0;
   const tokensTotal = currentUser.tokensTotal || 0; // Default to 0 if undefined
@@ -42,17 +52,23 @@ export function UserProfileSheet({ isOpen, onOpenChange, currentUser }: UserProf
     localStorage.removeItem('currentUserPlan');
     localStorage.removeItem('currentUserTokensTotal');
     localStorage.removeItem('currentUserTokensUsed');
+    localStorage.removeItem('locale'); // Clear locale on logout
     toast({
-      title: "Logged Out",
-      description: "You have been successfully logged out.",
+      title: t('userProfile.logoutSuccessTitle'),
+      description: t('userProfile.logoutSuccessDescription'),
     });
     onOpenChange(false); // Close the sheet
+    changeLanguage('en'); // Reset to default language
     router.push('/login');
   };
 
   const handleUpgradePlan = () => {
     onOpenChange(false); // Close the sheet
     router.push('/subscribe');
+  };
+
+  const handleLanguageChange = (newLocale: string) => {
+    changeLanguage(newLocale);
   };
 
   return (
@@ -65,7 +81,7 @@ export function UserProfileSheet({ isOpen, onOpenChange, currentUser }: UserProf
               {currentUser.name}
             </SheetTitle>
             <SheetDescription className="mt-1 text-muted-foreground">
-              Manage your profile, subscription, and token usage.
+              {t('userProfile.description')}
             </SheetDescription>
           </div>
         </SheetHeader>
@@ -73,24 +89,43 @@ export function UserProfileSheet({ isOpen, onOpenChange, currentUser }: UserProf
         <Separator />
 
         <div className="flex-1 overflow-y-auto p-6 space-y-8">
+          {/* Language Selector Section */}
+          <div>
+            <h3 className="text-lg font-semibold mb-3 flex items-center text-foreground">
+              <Languages size={20} className="mr-2 text-primary" />
+              {t('userProfile.language')}
+            </h3>
+            <div className="space-y-3 p-4 border rounded-lg bg-card shadow-sm">
+              <Select value={locale} onValueChange={handleLanguageChange}>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder={t('userProfile.language')} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="en">{t('userProfile.english')}</SelectItem>
+                  <SelectItem value="es">{t('userProfile.spanish')}</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
           {/* Subscription Plan Section */}
           <div>
             <h3 className="text-lg font-semibold mb-3 flex items-center text-foreground">
               <Award size={20} className="mr-2 text-primary" />
-              Subscription Plan
+              {t('userProfile.currentPlan')}
             </h3>
             <div className="space-y-3 p-4 border rounded-lg bg-card shadow-sm">
               <div>
-                <Label className="text-muted-foreground">Current Plan</Label>
+                <Label className="text-muted-foreground">{t('userProfile.currentPlan')}</Label>
                 <p className="text-lg font-medium text-foreground mt-0.5">
-                  {currentUser.planName || "N/A"}
+                  {currentUser.planName ? t(`subscribe.plans.${currentUser.planName}.name`) : "N/A"}
                 </p>
               </div>
               <Button 
                 onClick={handleUpgradePlan}
                 className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
               >
-                {currentUser.planName === 'FREE' ? 'Upgrade Plan' : 'Manage Subscription'}
+                {currentUser.planName === 'FREE' ? t('userProfile.upgradePlan') : t('userProfile.manageSubscription')}
                 <ArrowRight size={16} className="ml-2" />
               </Button>
             </div>
@@ -100,16 +135,19 @@ export function UserProfileSheet({ isOpen, onOpenChange, currentUser }: UserProf
           <div>
             <h3 className="text-lg font-semibold mb-3 flex items-center text-foreground">
               <Coins size={20} className="mr-2 text-primary" />
-              Token Usage
+              {t('userProfile.tokenUsage')}
             </h3>
             <div className="space-y-3 p-4 border rounded-lg bg-card shadow-sm">
-              {tokensTotal > 0 || currentUser.planName === 'ENTERPRISE' ? ( // Show even if total is 0 for Enterprise (custom)
+              {tokensTotal > 0 || currentUser.planName === 'ENTERPRISE' ? ( 
                 <>
                   <div>
                     <div className="flex justify-between items-baseline mb-1">
-                      <Label className="text-muted-foreground">Tokens Used</Label>
+                      <Label className="text-muted-foreground">{t('userProfile.tokensUsed')}</Label>
                       <p className="text-sm font-medium text-foreground">
-                        {tokensUsed.toLocaleString()} / {currentUser.planName === 'ENTERPRISE' ? 'Custom' : tokensTotal.toLocaleString()}
+                        {t('userProfile.tokensUsedOfTotal', {
+                          tokensUsed: tokensUsed.toLocaleString(),
+                          tokensTotal: currentUser.planName === 'ENTERPRISE' ? t('userProfile.enterpriseCustomTokens') : tokensTotal.toLocaleString()
+                        })}
                       </p>
                     </div>
                     {currentUser.planName !== 'ENTERPRISE' && (
@@ -117,14 +155,19 @@ export function UserProfileSheet({ isOpen, onOpenChange, currentUser }: UserProf
                     )}
                     {currentUser.planName !== 'ENTERPRISE' && (
                        <p className="text-xs text-muted-foreground mt-1.5 text-right">
-                        {tokensUsedPercent}% used
+                        {t('userProfile.tokensUsedPercent', {percent: tokensUsedPercent})}
                       </p>
                     )}
                   </div>
-                  {currentUser.planName !== 'ENTERPRISE' && (
+                  {currentUser.planName !== 'ENTERPRISE' && currentUser.planName !== 'FREE' && ( // Don't show for FREE if they have tokens
                     <Button variant="outline" className="w-full" onClick={handleUpgradePlan}>
-                      Get More Tokens
+                      {t('userProfile.getMoreTokens')}
                     </Button>
+                  )}
+                  {currentUser.planName === 'FREE' && tokensUsed >= tokensTotal && ( // Show for FREE if tokens are exhausted
+                     <Button variant="outline" className="w-full" onClick={handleUpgradePlan}>
+                        {t('userProfile.getMoreTokens')}
+                     </Button>
                   )}
                 </>
               ) : (
@@ -132,22 +175,24 @@ export function UserProfileSheet({ isOpen, onOpenChange, currentUser }: UserProf
                     <>
                      <div>
                         <div className="flex justify-between items-baseline mb-1">
-                          <Label className="text-muted-foreground">Tokens Used</Label>
+                          <Label className="text-muted-foreground">{t('userProfile.tokensUsed')}</Label>
                            <p className="text-sm font-medium text-foreground">
-                            {tokensUsed.toLocaleString()} / {tokensTotal.toLocaleString()}
+                             {t('userProfile.tokensUsedOfTotal', {tokensUsed: tokensUsed.toLocaleString(), tokensTotal: tokensTotal.toLocaleString()})}
                           </p>
                         </div>
                         <Progress value={tokensUsedPercent} className="h-2.5" />
                         <p className="text-xs text-muted-foreground mt-1.5 text-right">
-                          {tokensUsedPercent}% used
+                           {t('userProfile.tokensUsedPercent', {percent: tokensUsedPercent})}
                         </p>
                       </div>
-                      <Button variant="outline" className="w-full" onClick={handleUpgradePlan}>
-                        Get More Tokens
-                      </Button>
+                       { tokensUsed >= tokensTotal && (
+                         <Button variant="outline" className="w-full" onClick={handleUpgradePlan}>
+                          {t('userProfile.getMoreTokens')}
+                        </Button>
+                       )}
                     </>
                  ) : (
-                    <p className="text-muted-foreground text-sm">Token usage information not available for the current plan or an error occurred.</p>
+                    <p className="text-muted-foreground text-sm">{t('userProfile.tokenInfoNotAvailable')}</p>
                  )
               )}
             </div>
@@ -159,10 +204,10 @@ export function UserProfileSheet({ isOpen, onOpenChange, currentUser }: UserProf
         <SheetFooter className="p-6 flex flex-col gap-2 sm:flex-row sm:justify-between">
           <Button variant="destructive" onClick={handleLogout} className="w-full sm:w-auto">
             <LogOut size={16} className="mr-2" />
-            Log Out
+            {t('userProfile.logout')}
           </Button>
           <SheetClose asChild>
-            <Button variant="outline" className="w-full sm:w-auto mt-2 sm:mt-0">Close</Button>
+            <Button variant="outline" className="w-full sm:w-auto mt-2 sm:mt-0">{t('userProfile.close')}</Button>
           </SheetClose>
         </SheetFooter>
       </SheetContent>

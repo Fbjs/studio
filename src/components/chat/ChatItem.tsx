@@ -1,9 +1,11 @@
+
 "use client";
 
 import type { ChatContact } from '@/lib/types';
 import { UserAvatar } from './UserAvatar';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
+import { useTranslation } from '@/hooks/useTranslation';
 
 interface ChatItemProps {
   chat: ChatContact;
@@ -12,6 +14,8 @@ interface ChatItemProps {
 }
 
 export function ChatItem({ chat, isSelected, onSelect }: ChatItemProps) {
+  const { dateLocale, t } = useTranslation();
+
   return (
     <div
       onClick={onSelect}
@@ -28,7 +32,7 @@ export function ChatItem({ chat, isSelected, onSelect }: ChatItemProps) {
         <div className="flex justify-between items-center">
           <h3 className="font-semibold text-sm truncate">{chat.name}</h3>
           <span className="text-xs text-muted-foreground whitespace-nowrap">
-            {format(chat.lastMessageTimestamp, 'p')}
+            {format(chat.lastMessageTimestamp, 'p', { locale: dateLocale })}
           </span>
         </div>
         <div className="flex justify-between items-center mt-1">
