@@ -31,3 +31,21 @@ export interface User {
   tokensUsed?: number;
   tokensTotal?: number;
 }
+
+export interface SalesExecutive {
+  id: string;
+  name: string;
+  email?: string;
+  phone?: string;
+  // Future: Add color for calendar identification, specialization, etc.
+}
+
+export interface AvailabilitySlot {
+  id: string;
+  executiveId: string;
+  startTime: Date;
+  endTime: Date;
+  isBooked: boolean;
+  bookedByContactId?: string; // ID of the ChatContact who booked
+  appointmentNotes?: string;
+}

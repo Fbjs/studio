@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { UserAvatar } from "@/components/chat/UserAvatar";
-import { Award, Coins, LogOut, ArrowRight, Languages } from "lucide-react";
+import { Award, Coins, LogOut, ArrowRight, Languages, Users, CalendarDays, Settings } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
@@ -62,9 +62,9 @@ export function UserProfileSheet({ isOpen, onOpenChange, currentUser }: UserProf
     router.push('/login');
   };
 
-  const handleUpgradePlan = () => {
+  const handleNavigate = (path: string) => {
     onOpenChange(false); // Close the sheet
-    router.push('/subscribe');
+    router.push(path);
   };
 
   const handleLanguageChange = (newLocale: string) => {
@@ -122,7 +122,7 @@ export function UserProfileSheet({ isOpen, onOpenChange, currentUser }: UserProf
                 </p>
               </div>
               <Button 
-                onClick={handleUpgradePlan}
+                onClick={() => handleNavigate('/subscribe')}
                 className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
               >
                 {currentUser.planName === 'FREE' ? t('userProfile.upgradePlan') : t('userProfile.manageSubscription')}
@@ -159,13 +159,13 @@ export function UserProfileSheet({ isOpen, onOpenChange, currentUser }: UserProf
                       </p>
                     )}
                   </div>
-                  {currentUser.planName !== 'ENTERPRISE' && currentUser.planName !== 'FREE' && ( // Don't show for FREE if they have tokens
-                    <Button variant="outline" className="w-full" onClick={handleUpgradePlan}>
+                  {currentUser.planName !== 'ENTERPRISE' && currentUser.planName !== 'FREE' && ( 
+                    <Button variant="outline" className="w-full" onClick={() => handleNavigate('/subscribe')}>
                       {t('userProfile.getMoreTokens')}
                     </Button>
                   )}
-                  {currentUser.planName === 'FREE' && tokensUsed >= tokensTotal && ( // Show for FREE if tokens are exhausted
-                     <Button variant="outline" className="w-full" onClick={handleUpgradePlan}>
+                  {currentUser.planName === 'FREE' && tokensUsed >= tokensTotal && ( 
+                     <Button variant="outline" className="w-full" onClick={() => handleNavigate('/subscribe')}>
                         {t('userProfile.getMoreTokens')}
                      </Button>
                   )}
@@ -186,7 +186,7 @@ export function UserProfileSheet({ isOpen, onOpenChange, currentUser }: UserProf
                         </p>
                       </div>
                        { tokensUsed >= tokensTotal && (
-                         <Button variant="outline" className="w-full" onClick={handleUpgradePlan}>
+                         <Button variant="outline" className="w-full" onClick={() => handleNavigate('/subscribe')}>
                           {t('userProfile.getMoreTokens')}
                         </Button>
                        )}
@@ -197,6 +197,33 @@ export function UserProfileSheet({ isOpen, onOpenChange, currentUser }: UserProf
               )}
             </div>
           </div>
+
+          {/* Admin Settings Section */}
+          <div>
+            <h3 className="text-lg font-semibold mb-3 flex items-center text-foreground">
+              <Settings size={20} className="mr-2 text-primary" />
+              {t('userProfile.adminSettings.title')}
+            </h3>
+            <div className="space-y-3 p-4 border rounded-lg bg-card shadow-sm">
+              <Button 
+                variant="outline" 
+                className="w-full justify-start"
+                onClick={() => handleNavigate('/admin/sales-executives')}
+              >
+                <Users size={18} className="mr-3 text-muted-foreground" />
+                {t('userProfile.adminSettings.manageSalesExecutives')}
+              </Button>
+              <Button 
+                variant="outline" 
+                className="w-full justify-start"
+                onClick={() => handleNavigate('/admin/schedules')}
+              >
+                <CalendarDays size={18} className="mr-3 text-muted-foreground" />
+                {t('userProfile.adminSettings.manageSchedules')}
+              </Button>
+            </div>
+          </div>
+
         </div>
         
         <Separator />

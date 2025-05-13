@@ -23,7 +23,12 @@
     "close": "Close",
     "language": "Language",
     "english": "English",
-    "spanish": "Spanish"
+    "spanish": "Spanish",
+    "adminSettings": {
+      "title": "Admin Settings",
+      "manageSalesExecutives": "Manage Sales Executives",
+      "manageSchedules": "Manage Schedules & Appointments"
+    }
   },
   "login": {
     "welcome": "Welcome to FIA Assistant Chat",
@@ -118,6 +123,17 @@
     "keywordsLabel": "Keywords to Trigger Bot",
     "keywordsPlaceholder": "e.g., help, support, pricing",
     "keywordsHelpText": "Comma-separated keywords.",
+    "appointmentScheduling": {
+      "title": "Appointment Scheduling Settings",
+      "enableBotScheduling": "Enable Bot Scheduling",
+      "enableBotSchedulingDesc": "Allow this bot to schedule appointments based on executive availability.",
+      "defaultDurationLabel": "Default Appointment Duration",
+      "defaultDurationPlaceholder": "Select duration",
+      "durationMinutes": "{count} minutes",
+      "servicesLabel": "Services for Booking",
+      "servicesPlaceholder": "e.g., Demo, Consultation, Support Call",
+      "servicesHelpText": "Comma-separated list of services the bot can book."
+    },
     "advancedConfigNotice": "More advanced AI configurations will be available here in the future.",
     "cancel": "Cancel",
     "saveConfiguration": "Save Configuration"
@@ -193,6 +209,67 @@
         ],
         "tierHighlight": "Tailored for large organizations"
       }
+    }
+  },
+  "adminSalesExecutives": {
+    "backToChat": "Back to Chat",
+    "title": "Manage Sales Executives",
+    "description": "Add, edit, or remove sales executives from your team.",
+    "addNew": "Add New Executive",
+    "addTitle": "Add New Sales Executive",
+    "editTitle": "Edit Sales Executive",
+    "listTitle": "Sales Executives List",
+    "listDescription": "View and manage your team of sales executives.",
+    "searchPlaceholder": "Search by name or email...",
+    "editButton": "Edit",
+    "deleteButton": "Delete",
+    "noExecutivesFound": "No sales executives found. Add one to get started.",
+    "form": {
+      "nameLabel": "Name",
+      "namePlaceholder": "Enter full name",
+      "emailLabel": "Email",
+      "emailPlaceholder": "Enter email address",
+      "phoneLabel": "Phone",
+      "phonePlaceholder": "Enter phone number",
+      "cancel": "Cancel",
+      "saveChanges": "Save Changes",
+      "addExecutive": "Add Executive"
+    },
+    "validation": {
+      "nameRequired": "Executive name is required."
+    }
+  },
+  "adminSchedules": {
+    "backToChat": "Back to Chat",
+    "title": "Manage Schedules & Appointments",
+    "description": "Define availability for your sales executives and view booked appointments.",
+    "selectExecutive": "Select Executive",
+    "selectExecutivePlaceholder": "Choose an executive",
+    "selectDate": "Select Date",
+    "availabilityFor": "Availability for",
+    "noExecutiveSelected": "No Executive Selected",
+    "noDateSelected": "No Date Selected",
+    "addSlot": "Add Availability Slot",
+    "booked": "Booked",
+    "available": "Available",
+    "noSlotsForDate": "No availability slots defined for this executive on this date.",
+    "selectExecutiveAndDatePrompt": "Please select an executive and a date to view or manage availability.",
+    "addSlotTitle": "Add Availability Slot",
+    "editSlotTitle": "Edit Availability Slot",
+    "editSlot": "Edit Slot",
+    "deleteSlot": "Delete Slot",
+    "form": {
+      "startTimeLabel": "Start Time",
+      "endTimeLabel": "End Time",
+      "notesLabel": "Notes",
+      "notesPlaceholder": "Optional appointment notes",
+      "cancel": "Cancel",
+      "saveChanges": "Save Changes",
+      "addSlotButton": "Add Slot"
+    },
+    "validation": {
+      "slotFormError": "Executive, date, start time, and end time are required.",
+      "endTimeAfterStartTime": "End time must be after start time."
     }
   }
 }

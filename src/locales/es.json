@@ -23,7 +23,12 @@
     "close": "Cerrar",
     "language": "Idioma",
     "english": "Inglés",
-    "spanish": "Español"
+    "spanish": "Español",
+    "adminSettings": {
+      "title": "Configuración de Administrador",
+      "manageSalesExecutives": "Gestionar Ejecutivos de Ventas",
+      "manageSchedules": "Gestionar Horarios y Citas"
+    }
   },
   "login": {
     "welcome": "Bienvenido a FIA Assistant Chat",
@@ -118,6 +123,17 @@
     "keywordsLabel": "Palabras Clave para Activar el Bot",
     "keywordsPlaceholder": "ej., ayuda, soporte, precios",
     "keywordsHelpText": "Palabras clave separadas por coma.",
+    "appointmentScheduling": {
+      "title": "Configuración de Agendamiento de Citas",
+      "enableBotScheduling": "Habilitar Agendamiento por Bot",
+      "enableBotSchedulingDesc": "Permitir que este bot agende citas según la disponibilidad del ejecutivo.",
+      "defaultDurationLabel": "Duración Predeterminada de Cita",
+      "defaultDurationPlaceholder": "Seleccionar duración",
+      "durationMinutes": "{count} minutos",
+      "servicesLabel": "Servicios para Agendar",
+      "servicesPlaceholder": "ej., Demo, Consulta, Llamada de Soporte",
+      "servicesHelpText": "Lista de servicios que el bot puede agendar, separados por coma."
+    },
     "advancedConfigNotice": "Más configuraciones avanzadas de IA estarán disponibles aquí en el futuro.",
     "cancel": "Cancelar",
     "saveConfiguration": "Guardar Configuración"
@@ -193,6 +209,67 @@
         ],
         "tierHighlight": "Adaptado para grandes organizaciones"
       }
+    }
+  },
+  "adminSalesExecutives": {
+    "backToChat": "Volver al Chat",
+    "title": "Gestionar Ejecutivos de Ventas",
+    "description": "Agrega, edita o elimina ejecutivos de ventas de tu equipo.",
+    "addNew": "Agregar Nuevo Ejecutivo",
+    "addTitle": "Agregar Nuevo Ejecutivo de Ventas",
+    "editTitle": "Editar Ejecutivo de Ventas",
+    "listTitle": "Lista de Ejecutivos de Ventas",
+    "listDescription": "Visualiza y gestiona tu equipo de ejecutivos de ventas.",
+    "searchPlaceholder": "Buscar por nombre o email...",
+    "editButton": "Editar",
+    "deleteButton": "Eliminar",
+    "noExecutivesFound": "No se encontraron ejecutivos de ventas. Agrega uno para comenzar.",
+    "form": {
+      "nameLabel": "Nombre",
+      "namePlaceholder": "Ingresar nombre completo",
+      "emailLabel": "Email",
+      "emailPlaceholder": "Ingresar dirección de email",
+      "phoneLabel": "Teléfono",
+      "phonePlaceholder": "Ingresar número de teléfono",
+      "cancel": "Cancelar",
+      "saveChanges": "Guardar Cambios",
+      "addExecutive": "Agregar Ejecutivo"
+    },
+    "validation": {
+      "nameRequired": "El nombre del ejecutivo es obligatorio."
+    }
+  },
+  "adminSchedules": {
+    "backToChat": "Volver al Chat",
+    "title": "Gestionar Horarios y Citas",
+    "description": "Define la disponibilidad de tus ejecutivos de ventas y visualiza las citas agendadas.",
+    "selectExecutive": "Seleccionar Ejecutivo",
+    "selectExecutivePlaceholder": "Elige un ejecutivo",
+    "selectDate": "Seleccionar Fecha",
+    "availabilityFor": "Disponibilidad para",
+    "noExecutiveSelected": "Ningún Ejecutivo Seleccionado",
+    "noDateSelected": "Ninguna Fecha Seleccionada",
+    "addSlot": "Agregar Franja Horaria",
+    "booked": "Reservado",
+    "available": "Disponible",
+    "noSlotsForDate": "No hay franjas de disponibilidad definidas para este ejecutivo en esta fecha.",
+    "selectExecutiveAndDatePrompt": "Por favor, selecciona un ejecutivo y una fecha para ver o gestionar la disponibilidad.",
+    "addSlotTitle": "Agregar Franja de Disponibilidad",
+    "editSlotTitle": "Editar Franja de Disponibilidad",
+    "editSlot": "Editar Franja",
+    "deleteSlot": "Eliminar Franja",
+    "form": {
+      "startTimeLabel": "Hora Inicio",
+      "endTimeLabel": "Hora Fin",
+      "notesLabel": "Notas",
+      "notesPlaceholder": "Notas opcionales de la cita",
+      "cancel": "Cancelar",
+      "saveChanges": "Guardar Cambios",
+      "addSlotButton": "Agregar Franja"
+    },
+    "validation": {
+      "slotFormError": "Se requieren ejecutivo, fecha, hora de inicio y hora de finalización.",
+      "endTimeAfterStartTime": "La hora de finalización debe ser posterior a la hora de inicio."
     }
   }
 }
