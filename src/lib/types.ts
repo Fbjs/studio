@@ -18,6 +18,7 @@ export interface ChatContact {
   lastMessageTimestamp: Date;
   unreadCount?: number;
   onlineStatus?: 'online' | 'offline' | string; // e.g., "last seen 2 hours ago"
+  category?: 'Work' | 'Friends' | 'Personal' | string; // Added for chat categorization
 }
 
 export interface User {

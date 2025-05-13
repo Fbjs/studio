@@ -1,11 +1,12 @@
+
 "use client";
 
 import { useState, useMemo, useEffect } from 'react';
 import { ChatList } from '@/components/chat/ChatList';
 import { ChatWindow } from '@/components/chat/ChatWindow';
 import type { ChatContact, Message, User } from '@/lib/types';
-import { ScrollArea } from '@/components/ui/scroll-area'; // Import ScrollArea if needed for main layout, though less likely here
 import { MessageSquareText } from 'lucide-react';
+import { BotConfigSheet } from '@/components/ai/BotConfigSheet'; // Import BotConfigSheet
 
 // Mock Data
 const currentUser: User = {
@@ -23,6 +24,7 @@ const mockContacts: ChatContact[] = [
     lastMessageTimestamp: new Date(Date.now() - 5 * 60 * 1000), // 5 minutes ago
     unreadCount: 2,
     onlineStatus: 'online',
+    category: 'Work',
   },
   {
     id: 'contact2',
@@ -31,6 +33,7 @@ const mockContacts: ChatContact[] = [
     lastMessage: 'Can we fix it? Yes, we can!',
     lastMessageTimestamp: new Date(Date.now() - 30 * 60 * 1000), // 30 minutes ago
     onlineStatus: 'Last seen 15m ago',
+    category: 'Friends',
   },
   {
     id: 'contact3',
@@ -39,6 +42,7 @@ const mockContacts: ChatContact[] = [
     lastMessage: 'Good grief!',
     lastMessageTimestamp: new Date(Date.now() - 2 * 60 * 60 * 1000), // 2 hours ago
     unreadCount: 5,
+    category: 'Work',
   },
   {
     id: 'contact4',
@@ -47,6 +51,7 @@ const mockContacts: ChatContact[] = [
     lastMessage: 'Wondering about the project deadline.',
     lastMessageTimestamp: new Date(Date.now() - 24 * 60 * 60 * 1000), // Yesterday
     onlineStatus: 'offline',
+    category: 'Friends',
   },
 ];
 
@@ -73,6 +78,7 @@ export default function Home() {
   const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
   const [chats, setChats] = useState<ChatContact[]>(mockContacts);
   const [messagesStore, setMessagesStore] = useState<{ [chatId: string]: Message[] }>(mockMessagesStore);
+  const [isBotConfigSheetOpen, setIsBotConfigSheetOpen] = useState(false);
 
   const selectedChat = useMemo(() => {
     return chats.find(chat => chat.id === selectedChatId) || null;
@@ -85,7 +91,6 @@ export default function Home() {
 
   const handleSelectChat = (chatId: string) => {
     setSelectedChatId(chatId);
-    // Mark messages as read (conceptually)
     setChats(prevChats => 
       prevChats.map(c => 
         c.id === chatId ? { ...c, unreadCount: 0 } : c
@@ -101,7 +106,7 @@ export default function Home() {
       senderId: currentUser.id,
       content,
       timestamp: new Date(),
-      status: 'sent', // Initially sent, could be updated to delivered/read later
+      status: 'sent',
     };
 
     setMessagesStore(prevStore => ({
@@ -109,16 +114,14 @@ export default function Home() {
       [selectedChatId]: [...(prevStore[selectedChatId] || []), newMessage],
     }));
 
-    // Update last message in chat list
     setChats(prevChats => 
       prevChats.map(c => 
         c.id === selectedChatId 
         ? { ...c, lastMessage: content, lastMessageTimestamp: new Date() } 
         : c
-      ).sort((a, b) => b.lastMessageTimestamp.getTime() - a.lastMessageTimestamp.getTime()) // Re-sort chats by last message time
+      ).sort((a, b) => b.lastMessageTimestamp.getTime() - a.lastMessageTimestamp.getTime())
     );
 
-    // Simulate receiving a reply after a short delay for demo purposes
     setTimeout(() => {
       const contact = chats.find(c => c.id === selectedChatId);
       if (contact) {
@@ -127,7 +130,7 @@ export default function Home() {
           senderId: contact.id,
           content: `Okay, I got: "${content.substring(0, 20)}..."`,
           timestamp: new Date(),
-          status: 'read', // Assume auto-read by current user
+          status: 'read',
           avatarUrl: contact.avatarUrl,
           senderName: contact.name,
         };
@@ -146,34 +149,50 @@ export default function Home() {
     }, 1500);
   };
   
-  // Add data-ai-hint to images in mock data for generation purposes
   useEffect(() => {
-    const updatedChats = mockContacts.map(contact => ({
+    const updatedChatsWithHints = mockContacts.map(contact => ({
       ...contact,
       avatarUrl: `${contact.avatarUrl}?${new URLSearchParams({"data-ai-hint": "person profile"}).toString()}`
     }));
-    currentUser.avatarUrl = `${currentUser.avatarUrl}?${new URLSearchParams({"data-ai-hint": "user profile"}).toString()}`;
+     const updatedCurrentUser = {
+      ...currentUser,
+      avatarUrl: `${currentUser.avatarUrl}?${new URLSearchParams({"data-ai-hint": "user profile"}).toString()}`
+    };
     
-    const updatedMessagesStore = { ...mockMessagesStore };
-    for (const chatId in updatedMessagesStore) {
-        updatedMessagesStore[chatId] = updatedMessagesStore[chatId].map(msg => {
+    const updatedMessagesStoreWithHints = { ...mockMessagesStore };
+    for (const chatId in updatedMessagesStoreWithHints) {
+        updatedMessagesStoreWithHints[chatId] = updatedMessagesStoreWithHints[chatId].map(msg => {
             if (msg.avatarUrl) {
-                return { ...msg, avatarUrl: `${msg.avatarUrl}?${new URLSearchParams({"data-ai-hint": "chat avatar"}).toString()}` };
+                 // Ensure base URL doesn't already have params
+                const baseUrl = msg.avatarUrl.split('?')[0];
+                return { ...msg, avatarUrl: `${baseUrl}?${new URLSearchParams({"data-ai-hint": "chat avatar"}).toString()}` };
             }
             return msg;
         });
     }
+    // This is a bit tricky because currentUser is not in state, but we need to update its URL for UserAvatar
+    // For this demo, we'll update the global const. In a real app, currentUser would be in state or context.
+    currentUser.avatarUrl = updatedCurrentUser.avatarUrl;
 
-    setChats(updatedChats);
-    // No need to update messagesStore directly with state setter if mockMessagesStore is updated, 
-    // but if it's separate state, then do it:
-    // setMessagesStore(updatedMessagesStore); // This might cause issues if state is already set
+
+    setChats(updatedChatsWithHints);
+    setMessagesStore(updatedMessagesStoreWithHints);
   }, []);
 
 
+  const toggleBotConfigSheet = () => {
+    setIsBotConfigSheetOpen(prev => !prev);
+  };
+
   return (
     <div className="flex h-screen antialiased text-foreground bg-background overflow-hidden">
-      <ChatList chats={chats} selectedChatId={selectedChatId} onSelectChat={handleSelectChat} />
+      <ChatList 
+        chats={chats} 
+        selectedChatId={selectedChatId} 
+        onSelectChat={handleSelectChat}
+        currentUser={currentUser}
+        onToggleBotConfigSheet={toggleBotConfigSheet}
+      />
       <main className="flex-1 flex flex-col">
         {selectedChat ? (
           <ChatWindow
@@ -191,6 +210,10 @@ export default function Home() {
           </div>
         )}
       </main>
+      <BotConfigSheet 
+        isOpen={isBotConfigSheetOpen} 
+        onOpenChange={setIsBotConfigSheetOpen} 
+      />
     </div>
   );
 }
