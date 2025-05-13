@@ -21,11 +21,13 @@ export interface ChatContact {
   category?: 'Work' | 'Friends' | 'Personal' | string; // Added for chat categorization
 }
 
+export type PlanName = 'FREE' | 'STARTER' | 'BUSINESS' | 'ENTERPRISE';
+
 export interface User {
   id: string;
   name: string;
   avatarUrl: string;
-  planName?: string;
+  planName?: PlanName;
   tokensUsed?: number;
   tokensTotal?: number;
 }

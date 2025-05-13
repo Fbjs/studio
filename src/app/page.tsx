@@ -1,23 +1,23 @@
 
 "use client";
 
-import { useState, useMemo, useEffect as useEffectReact } from 'react'; // Renamed to avoid conflict
+import { useState, useMemo, useEffect as useEffectReact } from 'react';
 import { useRouter } from 'next/navigation';
 import { ChatList } from '@/components/chat/ChatList';
 import { ChatWindow } from '@/components/chat/ChatWindow';
-import type { ChatContact, Message, User } from '@/lib/types';
+import type { ChatContact, Message, User, PlanName } from '@/lib/types';
 import { MessageSquareText, Loader2 } from 'lucide-react';
 import { BotConfigSheet } from '@/components/ai/BotConfigSheet';
 import { UserProfileSheet } from '@/components/profile/UserProfileSheet';
 
-// Mock Data
-const currentUser: User = {
+// Initial Mock Data for currentUser
+const initialCurrentUser: User = {
   id: 'currentUser',
-  name: 'You',
+  name: 'Demo User',
   avatarUrl: 'https://picsum.photos/seed/currentuser/100/100',
-  planName: 'Pro Tier',
-  tokensUsed: 3500,
-  tokensTotal: 10000,
+  planName: 'FREE',
+  tokensUsed: 0,
+  tokensTotal: 10,
 };
 
 const mockContacts: ChatContact[] = [
@@ -82,6 +82,7 @@ const mockMessagesStore: { [chatId: string]: Message[] } = {
 export default function Home() {
   const router = useRouter();
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  const [currentUser, setCurrentUser] = useState<User>(initialCurrentUser);
 
   const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
   const [chats, setChats] = useState<ChatContact[]>(mockContacts);
@@ -90,12 +91,59 @@ export default function Home() {
   const [isUserProfileSheetOpen, setIsUserProfileSheetOpen] = useState(false);
 
   useEffectReact(() => {
-    // This effect runs on the client after hydration
     const authStatus = localStorage.getItem('isAuthenticated');
     if (authStatus === 'true') {
       setIsAuthenticated(true);
+
+      // Check for plan updates from localStorage (simulated subscription change)
+      const storedPlan = localStorage.getItem('currentUserPlan') as PlanName | null;
+      const storedTokensTotal = localStorage.getItem('currentUserTokensTotal');
+      const storedTokensUsed = localStorage.getItem('currentUserTokensUsed');
+
+      // Update currentUser state if plan info is found in localStorage
+      setCurrentUser(prevUser => {
+        let updatedUser = { ...prevUser };
+
+        if (storedPlan) {
+          updatedUser.planName = storedPlan;
+          // Reset tokens based on new plan, unless specific values are stored
+          updatedUser.tokensUsed = 0; // Typically reset used tokens on plan change
+
+          switch (storedPlan) {
+            case 'FREE':
+              updatedUser.tokensTotal = 10;
+              break;
+            case 'STARTER':
+              updatedUser.tokensTotal = 5000;
+              break;
+            case 'BUSINESS':
+              updatedUser.tokensTotal = 20000;
+              break;
+            case 'ENTERPRISE':
+              // Enterprise might be custom, keep existing or set to a high number for demo
+              updatedUser.tokensTotal = prevUser.tokensTotal; // Or specific logic
+              break;
+            default:
+              updatedUser.tokensTotal = 10; // Fallback to FREE plan tokens
+          }
+        }
+
+        if (storedTokensTotal) {
+          updatedUser.tokensTotal = parseInt(storedTokensTotal, 10);
+        }
+        if (storedTokensUsed) {
+          updatedUser.tokensUsed = parseInt(storedTokensUsed, 10);
+        }
+        
+        // Ensure avatar URL has AI hint
+        if (updatedUser.avatarUrl && !updatedUser.avatarUrl.includes('data-ai-hint')) {
+           updatedUser.avatarUrl = `${updatedUser.avatarUrl.split('?')[0]}?${new URLSearchParams({"data-ai-hint": "user profile"}).toString()}`;
+        }
+
+        return updatedUser;
+      });
+
     } else {
-      // Clear any potentially stale auth status and redirect
       localStorage.removeItem('isAuthenticated'); 
       router.replace('/login');
     }
@@ -144,6 +192,13 @@ export default function Home() {
       ).sort((a, b) => b.lastMessageTimestamp.getTime() - a.lastMessageTimestamp.getTime())
     );
 
+    // Simulate token usage
+    setCurrentUser(prev => ({
+      ...prev,
+      tokensUsed: (prev.tokensUsed || 0) + 1 // Increment token for each message sent
+    }));
+
+
     setTimeout(() => {
       const contact = chats.find(c => c.id === selectedChatId);
       if (contact) {
@@ -176,10 +231,6 @@ export default function Home() {
       ...contact,
       avatarUrl: `${contact.avatarUrl.split('?')[0]}?${new URLSearchParams({"data-ai-hint": "person profile"}).toString()}`
     }));
-     const updatedCurrentUser = {
-      ...currentUser,
-      avatarUrl: `${currentUser.avatarUrl.split('?')[0]}?${new URLSearchParams({"data-ai-hint": "user profile"}).toString()}`
-    };
     
     const updatedMessagesStoreWithHints = { ...mockMessagesStore };
     for (const chatId in updatedMessagesStoreWithHints) {
@@ -191,9 +242,6 @@ export default function Home() {
             return msg;
         });
     }
-
-    currentUser.avatarUrl = updatedCurrentUser.avatarUrl; 
-
     setChats(updatedChatsWithHints);
     setMessagesStore(updatedMessagesStoreWithHints);
   }, []);
@@ -216,8 +264,6 @@ export default function Home() {
     );
   }
 
-  // If isAuthenticated is false, router.replace('/login') should have already redirected.
-  // This is a fallback or if the page renders before redirect.
   if (!isAuthenticated) {
      return null;
   }
