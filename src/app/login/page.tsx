@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useEffect } from 'react';
@@ -20,15 +19,43 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isNewUserFlow, setIsNewUserFlow] = useState(false);
+  const [qrCode, setQrCode] = useState<string | null>(null);
+  const [qrInterval, setQrInterval] = useState<NodeJS.Timeout | null>(null);
   const router = useRouter();
   const { toast } = useToast();
   const { t } = useTranslation();
 
   useEffect(() => {
     if (localStorage.getItem('isAuthenticated') === 'true') {
-      router.replace('/');
+      setStep('password');
     }
-  }, [router]);
+  }, [step]);
+
+  const fetchQrCode = async () => {
+    try {
+      const response = await fetch('http://localhost:3000/api/whatsapp/qr');
+      if (response.ok) {
+        const data = await response.json();
+        setQrCode(data.qrCode);
+      } else {
+        console.error('Error al obtener el QR:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error al obtener el QR:', error);
+    }
+  };
+
+  useEffect(() => {
+    if (step === 'qr') {
+      fetchQrCode();
+      const interval = setInterval(fetchQrCode, 30000);
+      setQrInterval(interval);
+
+      return () => {
+        clearInterval(interval);
+      };
+    }
+  }, [step]);
 
   const handleSelectNewUser = () => {
     setIsNewUserFlow(true);
@@ -75,18 +102,64 @@ export default function LoginPage() {
 
   const handleLoginOrSetPassword = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
     if (!password.trim()) {
-      toast({
-        variant: "destructive",
-        title: t('login.passwordRequiredError'),
-        description: t('login.passwordRequiredErrorDesc'),
-      });
-      return;
+        toast({
+            variant: "destructive",
+            title: t('login.passwordRequiredError'),
+            description: t('login.passwordRequiredErrorDesc'),
+        });
+        return;
     }
+
     setIsLoading(true);
-    setTimeout(() => {
-      router.push('/loading'); 
-    }, 2000);
+
+    try {
+        const response = await fetch('http://localhost:3000/api/users/auth/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                phoneNumber, // Número de teléfono ingresado
+                password,    // Contraseña ingresada
+            }),
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            toast({
+                variant: "destructive",
+                title: t('login.loginFailed'),
+                description: errorData.message || t('login.genericError'),
+            });
+            setIsLoading(false);
+            return;
+        }
+
+        const data = await response.json();
+
+        // Guardar el token en localStorage o manejarlo según sea necesario
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('isAuthenticated', 'true');
+
+        toast({
+            title: t('login.success'),
+            description: t('login.welcomeBack'),
+        });
+
+        // Redirigir al usuario a la página principal
+        router.push('/');
+    } catch (error) {
+        console.error('❌ Error en el login:', error);
+        toast({
+            variant: "destructive",
+            title: t('login.genericError'),
+            description: t('login.serverError'),
+        });
+    } finally {
+        setIsLoading(false);
+    }
   };
 
   const renderSpinner = () => (
@@ -139,14 +212,17 @@ export default function LoginPage() {
             </CardHeader>
             <CardContent className="flex flex-col items-center space-y-6">
               <div className="p-2 border rounded-lg bg-muted/20">
-                <Image
-                  src="https://picsum.photos/300/300"
-                  alt="QR Code Placeholder"
-                  width={280}
-                  height={280}
-                  className="rounded-md"
-                  data-ai-hint="qrcode login"
-                />
+                {qrCode ? (
+                  <img
+                    src={`https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(qrCode)}&size=300x300`}
+                    alt="QR Code"
+                    width={280}
+                    height={280}
+                    className="rounded-md"
+                  />
+                ) : (
+                  <p>{t('login.loadingQR')}</p>
+                )}
               </div>
               <Button 
                 onClick={handleQrScanned} 
