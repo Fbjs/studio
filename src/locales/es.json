@@ -32,9 +32,10 @@
   },
   "login": {
     "welcome": "Bienvenido a FIA Assistant Chat",
-    "howToLogin": "¿Cómo te gustaría iniciar sesión?",
+    "howToLogin": "¿Cómo te gustaría iniciar sesión o registrarte?",
     "newUserQR": "Nuevo Usuario - Vincular con Código QR",
     "existingUserLogin": "Usuario Existente - Iniciar Sesión",
+    "registerButtonInitial": "Registrar Nueva Cuenta",
     "chooseOption": "Elige una opción para continuar.",
     "scanQRTitle": "Escanear Código QR",
     "scanQRDescription": "Escanea el código QR con tu WhatsApp para vincular tu cuenta.",
@@ -68,7 +69,16 @@
     "phoneRequiredError": "Número de Teléfono Requerido",
     "phoneRequiredErrorDesc": "Por favor, ingresa tu número de teléfono.",
     "passwordRequiredError": "Contraseña Requerida",
-    "passwordRequiredErrorDesc": "Por favor, ingresa una contraseña."
+    "passwordRequiredErrorDesc": "Por favor, ingresa una contraseña.",
+    "registerTitle": "Registrar Nueva Cuenta",
+    "registerDescription": "Crea tu cuenta con un número de teléfono y contraseña.",
+    "confirmPasswordLabel": "Confirmar Contraseña",
+    "confirmPasswordPlaceholder": "Vuelve a ingresar tu contraseña",
+    "registerAndLoginButton": "Registrarse e Iniciar Sesión",
+    "registering": "Registrando...",
+    "registerInfo": "Al registrarte, aceptas nuestros términos (simulado).",
+    "passwordsDontMatchError": "Las Contraseñas no Coinciden",
+    "passwordsDontMatchErrorDesc": "Por favor, asegúrate de que ambas contraseñas sean iguales."
   },
   "loading": {
     "title": "Cargando tus Chats",
@@ -154,7 +164,7 @@
         "data_capture": "Captura de Datos",
         "qualify": "Calificar Prospecto",
         "scheduled": "Cita Agendada",
-        "closed": "Acuerdo Cerrado/Perdido",
+        "closed": "Acuerdo Cerrado",
         "follow_up": "Seguimiento Requerido"
       },
       "validation": {

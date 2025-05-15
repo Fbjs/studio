@@ -8,16 +8,17 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { QrCode, LockKeyhole, LogIn, Smartphone, Users, ArrowRight } from 'lucide-react';
+import { QrCode, LockKeyhole, LogIn, Smartphone, Users, ArrowRight, UserPlus, ClipboardEdit } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useTranslation } from '@/hooks/useTranslation';
 
-type LoginStep = 'initial' | 'qr' | 'phone' | 'password';
+type LoginStep = 'initial' | 'qr' | 'phone' | 'password' | 'register';
 
 export default function LoginPage() {
   const [step, setStep] = useState<LoginStep>('initial');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isNewUserFlow, setIsNewUserFlow] = useState(false);
   const router = useRouter();
@@ -30,7 +31,7 @@ export default function LoginPage() {
     }
   }, [router]);
 
-  const handleSelectNewUser = () => {
+  const handleSelectNewUserQR = () => {
     setIsNewUserFlow(true);
     setStep('qr');
   };
@@ -40,10 +41,19 @@ export default function LoginPage() {
     setStep('phone');
   };
 
+  const handleSelectRegister = () => {
+    setIsNewUserFlow(true); // Registration is a new user flow
+    setStep('register');
+    // Clear fields for registration form
+    setPhoneNumber('');
+    setPassword('');
+    setConfirmPassword('');
+  };
+
   const handleQrScanned = () => {
     setIsLoading(true);
     setTimeout(() => {
-      setStep('password');
+      setStep('password'); // Proceed to set a password for the app
       setIsLoading(false);
       toast({
         title: t('login.qrScannedToastTitle'),
@@ -64,13 +74,36 @@ export default function LoginPage() {
     }
     setIsLoading(true);
     setTimeout(() => {
-      setStep('password');
+      setStep('password'); // Proceed to enter password for existing user
       setIsLoading(false);
       toast({
         title: t('login.phoneEnteredToastTitle'),
         description: t('login.phoneEnteredToastDescription'),
       });
     }, 1500);
+  };
+
+  const handleRegisterSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!phoneNumber.trim()) {
+      toast({ variant: "destructive", title: t('login.phoneRequiredError'), description: t('login.phoneRequiredErrorDesc') });
+      return;
+    }
+    if (!password.trim()) {
+      toast({ variant: "destructive", title: t('login.passwordRequiredError'), description: t('login.passwordRequiredErrorDesc') });
+      return;
+    }
+    if (password !== confirmPassword) {
+      toast({ variant: "destructive", title: t('login.passwordsDontMatchError'), description: t('login.passwordsDontMatchErrorDesc') });
+      return;
+    }
+    setIsLoading(true);
+    // Simulate API call for registration
+    setTimeout(() => {
+      // In a real app, you'd get a token or session here.
+      // The /loading page handles setting isAuthenticated.
+      router.push('/loading'); 
+    }, 2000);
   };
 
   const handleLoginOrSetPassword = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -84,6 +117,7 @@ export default function LoginPage() {
       return;
     }
     setIsLoading(true);
+    // Simulate API call for login or password set
     setTimeout(() => {
       router.push('/loading'); 
     }, 2000);
@@ -110,8 +144,8 @@ export default function LoginPage() {
                 {t('login.howToLogin')}
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <Button onClick={handleSelectNewUser} className="w-full" variant="outline">
+            <CardContent className="space-y-3">
+              <Button onClick={handleSelectNewUserQR} className="w-full" variant="outline">
                 <QrCode size={18} className="mr-2" />
                 {t('login.newUserQR')}
               </Button>
@@ -119,9 +153,84 @@ export default function LoginPage() {
                 <LogIn size={18} className="mr-2" />
                 {t('login.existingUserLogin')}
               </Button>
+              <Button onClick={handleSelectRegister} className="w-full" variant="secondary">
+                <UserPlus size={18} className="mr-2" />
+                {t('login.registerButtonInitial')}
+              </Button>
             </CardContent>
              <CardFooter className="text-xs text-muted-foreground text-center block pt-4">
               <p>{t('login.chooseOption')}</p>
+            </CardFooter>
+          </>
+        )}
+
+        {step === 'register' && (
+          <>
+            <CardHeader className="text-center">
+              <div className="mx-auto mb-4 p-3 bg-primary/10 rounded-full w-fit">
+                 <UserPlus size={40} className="text-primary" />
+              </div>
+              <CardTitle className="text-2xl">{t('login.registerTitle')}</CardTitle>
+              <CardDescription>
+                {t('login.registerDescription')}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleRegisterSubmit} className="space-y-4">
+                <div className="space-y-1">
+                  <Label htmlFor="reg-phone">{t('login.phoneNumberLabel')}</Label>
+                  <Input
+                    id="reg-phone"
+                    type="tel"
+                    value={phoneNumber}
+                    onChange={(e) => setPhoneNumber(e.target.value)}
+                    placeholder={t('login.phoneNumberPlaceholder')}
+                    required
+                    className="bg-input"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <Label htmlFor="reg-password">{t('login.passwordLabel')}</Label>
+                  <Input
+                    id="reg-password"
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder={t('login.passwordPlaceholder')}
+                    required
+                    className="bg-input"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <Label htmlFor="reg-confirm-password">{t('login.confirmPasswordLabel')}</Label>
+                  <Input
+                    id="reg-confirm-password"
+                    type="password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    placeholder={t('login.confirmPasswordPlaceholder')}
+                    required
+                    className="bg-input"
+                  />
+                </div>
+                <Button type="submit" className="w-full mt-6" disabled={isLoading}>
+                  {isLoading ? (
+                    <>
+                      {renderSpinner()}
+                      {t('login.registering')}
+                    </>
+                  ) : (
+                    <>
+                      <ClipboardEdit size={18} className="mr-2" />
+                      {t('login.registerAndLoginButton')}
+                    </>
+                  )}
+                </Button>
+              </form>
+            </CardContent>
+             <CardFooter className="text-xs text-muted-foreground text-center block">
+              <p>{t('login.registerInfo')}</p>
+              <Button variant="link" size="sm" onClick={() => setStep('initial')} className="mt-2">{t('login.back')}</Button>
             </CardFooter>
           </>
         )}
@@ -267,6 +376,7 @@ export default function LoginPage() {
                   : t('login.enterPasswordInfo')
                 }
               </p>
+              {/* For QR flow, back goes to QR. For phone login, back goes to phone. */}
               <Button variant="link" size="sm" onClick={() => setStep(isNewUserFlow ? 'qr' : 'phone')} className="mt-2">{t('login.back')}</Button>
             </CardFooter>
           </>
