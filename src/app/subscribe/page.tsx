@@ -218,7 +218,7 @@ export default function SubscribePage() {
                   disabled={isLoading || plan.id === currentPlan}
                   aria-live="polite"
                 >
-                  {isLoading && plan.ctaTextKey !== 'subscribe.contactSales' ? t('subscribe.processing') : (plan.id === currentPlan ? t('subscribe.currentPlan') : plan.ctaText)}
+                  {isLoading && plan.ctaTextKey !== 'subscribe.contactSales' && plan.id !== currentPlan ? t('subscribe.processing') : (plan.id === currentPlan ? t('subscribe.currentPlan') : plan.ctaText)}
                 </Button>
               </CardFooter>
             </Card>
@@ -233,8 +233,8 @@ export default function SubscribePage() {
             {t('subscribe.paymentInfoDescription')}
           </p>
           <div className="flex justify-center items-center space-x-6">
-            <Image src="https://picsum.photos/seed/stripe/120/50" alt="Stripe Logo" width={120} height={50} className="rounded" data-ai-hint="payment logo" />
-            <Image src="https://picsum.photos/seed/mercadopago/150/40" alt="Mercado Pago Logo" width={150} height={40} className="rounded" data-ai-hint="payment logo" />
+            <Image src="https://placehold.co/120x50.png" alt="Stripe Logo" width={120} height={50} className="rounded" data-ai-hint="payment logo" />
+            <Image src="https://placehold.co/150x40.png" alt="Mercado Pago Logo" width={150} height={40} className="rounded" data-ai-hint="payment logo" />
           </div>
            <p className="text-xs text-muted-foreground mt-8">
             {t('subscribe.paymentInfoFooter')}
@@ -249,3 +249,4 @@ const Image = ({ src, alt, width, height, className, "data-ai-hint": dataAiHint 
   // eslint-disable-next-line @next/next/no-img-element
   <img src={src} alt={alt} width={width} height={height} className={className} data-ai-hint={dataAiHint} />
 );
+

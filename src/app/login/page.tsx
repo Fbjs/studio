@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { QrCode, LockKeyhole, LogIn, Smartphone, Users, ArrowRight, UserPlus, ClipboardEdit } from 'lucide-react';
+import { QrCode, LockKeyhole, LogIn, Smartphone, Users, ArrowRight, UserPlus, ClipboardEdit, Eye, EyeOff } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useTranslation } from '@/hooks/useTranslation';
 
@@ -19,6 +19,8 @@ export default function LoginPage() {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isNewUserFlow, setIsNewUserFlow] = useState(false);
   const router = useRouter();
@@ -48,6 +50,8 @@ export default function LoginPage() {
     setPhoneNumber('');
     setPassword('');
     setConfirmPassword('');
+    setShowPassword(false);
+    setShowConfirmPassword(false);
   };
 
   const handleQrScanned = () => {
@@ -55,6 +59,7 @@ export default function LoginPage() {
     setTimeout(() => {
       setStep('password'); // Proceed to set a password for the app
       setIsLoading(false);
+      setShowPassword(false);
       toast({
         title: t('login.qrScannedToastTitle'),
         description: t('login.qrScannedToastDescription'),
@@ -76,6 +81,7 @@ export default function LoginPage() {
     setTimeout(() => {
       setStep('password'); // Proceed to enter password for existing user
       setIsLoading(false);
+      setShowPassword(false);
       toast({
         title: t('login.phoneEnteredToastTitle'),
         description: t('login.phoneEnteredToastDescription'),
@@ -102,7 +108,7 @@ export default function LoginPage() {
     setTimeout(() => {
       // In a real app, you'd get a token or session here.
       // The /loading page handles setting isAuthenticated.
-      router.push('/loading'); 
+      router.push('/loading');
     }, 2000);
   };
 
@@ -119,7 +125,7 @@ export default function LoginPage() {
     setIsLoading(true);
     // Simulate API call for login or password set
     setTimeout(() => {
-      router.push('/loading'); 
+      router.push('/loading');
     }, 2000);
   };
 
@@ -191,27 +197,49 @@ export default function LoginPage() {
                 </div>
                 <div className="space-y-1">
                   <Label htmlFor="reg-password">{t('login.passwordLabel')}</Label>
-                  <Input
-                    id="reg-password"
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder={t('login.passwordPlaceholder')}
-                    required
-                    className="bg-input"
-                  />
+                  <div className="relative">
+                    <Input
+                      id="reg-password"
+                      type={showPassword ? 'text' : 'password'}
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      placeholder={t('login.passwordPlaceholder')}
+                      required
+                      className="bg-input pr-10"
+                    />
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                    </Button>
+                  </div>
                 </div>
                 <div className="space-y-1">
                   <Label htmlFor="reg-confirm-password">{t('login.confirmPasswordLabel')}</Label>
-                  <Input
-                    id="reg-confirm-password"
-                    type="password"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    placeholder={t('login.confirmPasswordPlaceholder')}
-                    required
-                    className="bg-input"
-                  />
+                  <div className="relative">
+                    <Input
+                      id="reg-confirm-password"
+                      type={showConfirmPassword ? 'text' : 'password'}
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      placeholder={t('login.confirmPasswordPlaceholder')}
+                      required
+                      className="bg-input pr-10"
+                    />
+                     <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    >
+                      {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                    </Button>
+                  </div>
                 </div>
                 <Button type="submit" className="w-full mt-6" disabled={isLoading}>
                   {isLoading ? (
@@ -249,7 +277,7 @@ export default function LoginPage() {
             <CardContent className="flex flex-col items-center space-y-6">
               <div className="p-2 border rounded-lg bg-muted/20">
                 <Image
-                  src="https://picsum.photos/300/300"
+                  src="https://placehold.co/280x280.png"
                   alt="QR Code Placeholder"
                   width={280}
                   height={280}
@@ -344,15 +372,26 @@ export default function LoginPage() {
               <form onSubmit={handleLoginOrSetPassword} className="space-y-6">
                 <div className="space-y-2">
                   <Label htmlFor="password">{t('login.passwordLabel')}</Label>
-                  <Input
-                    id="password"
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder={t('login.passwordPlaceholder')}
-                    required
-                    className="bg-input"
-                  />
+                  <div className="relative">
+                    <Input
+                      id="password"
+                      type={showPassword ? 'text' : 'password'}
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      placeholder={t('login.passwordPlaceholder')}
+                      required
+                      className="bg-input pr-10"
+                    />
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                    </Button>
+                  </div>
                 </div>
                 <Button type="submit" className="w-full" disabled={isLoading}>
                   {isLoading ? (
@@ -385,3 +424,4 @@ export default function LoginPage() {
     </div>
   );
 }
+
