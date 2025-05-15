@@ -46,7 +46,7 @@
     "enterPhoneTitle": "Ingresa tu Número de Teléfono",
     "enterPhoneDescription": "Por favor, ingresa tu número de teléfono registrado para continuar.",
     "phoneNumberLabel": "Número de Teléfono",
-    "phoneNumberPlaceholder": "ej., +1 555 123 4567",
+    "phoneNumberPlaceholder": "ej., +1 555 123 4567 o 56 9 96606336",
     "continue": "Continuar",
     "verifying": "Verificando...",
     "phoneVerificationInfo": "\"Verificaremos\" tu número de teléfono (simulado).",
@@ -78,7 +78,9 @@
     "registering": "Registrando...",
     "registerInfo": "Al registrarte, aceptas nuestros términos (simulado).",
     "passwordsDontMatchError": "Las Contraseñas no Coinciden",
-    "passwordsDontMatchErrorDesc": "Por favor, asegúrate de que ambas contraseñas sean iguales."
+    "passwordsDontMatchErrorDesc": "Por favor, asegúrate de que ambas contraseñas sean iguales.",
+    "invalidPhoneFormatError": "Formato de Número de Teléfono Inválido",
+    "invalidPhoneFormatErrorDesc": "Por favor, ingresa un número de teléfono válido (ej., +1 234 567 8900 o 56 9 12345678)."
   },
   "loading": {
     "title": "Cargando tus Chats",
@@ -322,3 +324,5 @@
     }
   }
 }
+
+    

@@ -13,6 +13,8 @@ import { useTranslation } from '@/hooks/useTranslation';
 
 type LoginStep = 'initial' | 'qr' | 'phone' | 'password' | 'register';
 
+const PHONE_REGEX = /^\+?(?:[0-9] ?){6,14}[0-9]$/; // Allows optional +, digits, and single spaces between digits. Min 7, Max 15 digits overall.
+
 export default function LoginPage() {
   const [step, setStep] = useState<LoginStep>('initial');
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -104,6 +106,14 @@ export default function LoginPage() {
       });
       return;
     }
+    if (!PHONE_REGEX.test(phoneNumber)) {
+      toast({
+        variant: "destructive",
+        title: t('login.invalidPhoneFormatError'),
+        description: t('login.invalidPhoneFormatErrorDesc'),
+      });
+      return;
+    }
     setIsLoading(true);
     setTimeout(() => {
       setStep('password'); // Proceed to enter password for existing user
@@ -120,6 +130,14 @@ export default function LoginPage() {
     e.preventDefault();
     if (!phoneNumber.trim()) {
       toast({ variant: "destructive", title: t('login.phoneRequiredError'), description: t('login.phoneRequiredErrorDesc') });
+      return;
+    }
+    if (!PHONE_REGEX.test(phoneNumber)) {
+      toast({
+        variant: "destructive",
+        title: t('login.invalidPhoneFormatError'),
+        description: t('login.invalidPhoneFormatErrorDesc'),
+      });
       return;
     }
     if (!password.trim()) {
@@ -453,3 +471,5 @@ export default function LoginPage() {
   );
 }
 
+
+    
