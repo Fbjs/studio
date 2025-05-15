@@ -32,9 +32,10 @@
   },
   "login": {
     "welcome": "Welcome to FIA Assistant Chat",
-    "howToLogin": "How would you like to log in?",
+    "howToLogin": "How would you like to log in or register?",
     "newUserQR": "New User - Link with QR Code",
     "existingUserLogin": "Existing User - Login",
+    "registerButtonInitial": "Register New Account",
     "chooseOption": "Choose an option to proceed.",
     "scanQRTitle": "Scan QR Code",
     "scanQRDescription": "Scan the QR code with your WhatsApp to link your account.",
@@ -68,7 +69,16 @@
     "phoneRequiredError": "Phone Number Required",
     "phoneRequiredErrorDesc": "Please enter your phone number.",
     "passwordRequiredError": "Password Required",
-    "passwordRequiredErrorDesc": "Please enter a password."
+    "passwordRequiredErrorDesc": "Please enter a password.",
+    "registerTitle": "Register New Account",
+    "registerDescription": "Create your account with a phone number and password.",
+    "confirmPasswordLabel": "Confirm Password",
+    "confirmPasswordPlaceholder": "Re-enter your password",
+    "registerAndLoginButton": "Register & Login",
+    "registering": "Registering...",
+    "registerInfo": "By registering, you agree to our terms (simulated).",
+    "passwordsDontMatchError": "Passwords Don't Match",
+    "passwordsDontMatchErrorDesc": "Please ensure both passwords are the same."
   },
   "loading": {
     "title": "Loading Your Chats",
@@ -154,7 +164,7 @@
         "data_capture": "Data Capture",
         "qualify": "Qualify Lead",
         "scheduled": "Appointment Scheduled",
-        "closed": "Deal Closed/Lost",
+        "closed": "Deal Closed",
         "follow_up": "Follow-up Needed"
       },
       "validation": {

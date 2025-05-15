@@ -7,16 +7,19 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { QrCode, LockKeyhole, LogIn, Smartphone, Users, ArrowRight } from 'lucide-react';
+import { QrCode, LockKeyhole, LogIn, Smartphone, Users, ArrowRight, UserPlus, ClipboardEdit, Eye, EyeOff } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useTranslation } from '@/hooks/useTranslation';
 
-type LoginStep = 'initial' | 'qr' | 'phone' | 'password';
+type LoginStep = 'initial' | 'qr' | 'phone' | 'password' | 'register';
 
 export default function LoginPage() {
   const [step, setStep] = useState<LoginStep>('initial');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isNewUserFlow, setIsNewUserFlow] = useState(false);
   const [qrCode, setQrCode] = useState<string | null>(null);
@@ -57,7 +60,7 @@ export default function LoginPage() {
     }
   }, [step]);
 
-  const handleSelectNewUser = () => {
+  const handleSelectNewUserQR = () => {
     setIsNewUserFlow(true);
     setStep('qr');
   };
@@ -67,11 +70,23 @@ export default function LoginPage() {
     setStep('phone');
   };
 
+  const handleSelectRegister = () => {
+    setIsNewUserFlow(true); // Registration is a new user flow
+    setStep('register');
+    // Clear fields for registration form
+    setPhoneNumber('');
+    setPassword('');
+    setConfirmPassword('');
+    setShowPassword(false);
+    setShowConfirmPassword(false);
+  };
+
   const handleQrScanned = () => {
     setIsLoading(true);
     setTimeout(() => {
-      setStep('password');
+      setStep('password'); // Proceed to set a password for the app
       setIsLoading(false);
+      setShowPassword(false);
       toast({
         title: t('login.qrScannedToastTitle'),
         description: t('login.qrScannedToastDescription'),
@@ -91,13 +106,37 @@ export default function LoginPage() {
     }
     setIsLoading(true);
     setTimeout(() => {
-      setStep('password');
+      setStep('password'); // Proceed to enter password for existing user
       setIsLoading(false);
+      setShowPassword(false);
       toast({
         title: t('login.phoneEnteredToastTitle'),
         description: t('login.phoneEnteredToastDescription'),
       });
     }, 1500);
+  };
+
+  const handleRegisterSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!phoneNumber.trim()) {
+      toast({ variant: "destructive", title: t('login.phoneRequiredError'), description: t('login.phoneRequiredErrorDesc') });
+      return;
+    }
+    if (!password.trim()) {
+      toast({ variant: "destructive", title: t('login.passwordRequiredError'), description: t('login.passwordRequiredErrorDesc') });
+      return;
+    }
+    if (password !== confirmPassword) {
+      toast({ variant: "destructive", title: t('login.passwordsDontMatchError'), description: t('login.passwordsDontMatchErrorDesc') });
+      return;
+    }
+    setIsLoading(true);
+    // Simulate API call for registration
+    setTimeout(() => {
+      // In a real app, you'd get a token or session here.
+      // The /loading page handles setting isAuthenticated.
+      router.push('/loading');
+    }, 2000);
   };
 
   const handleLoginOrSetPassword = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -113,53 +152,9 @@ export default function LoginPage() {
     }
 
     setIsLoading(true);
-
-    try {
-        const response = await fetch('http://localhost:3000/api/users/auth/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                phoneNumber, // Número de teléfono ingresado
-                password,    // Contraseña ingresada
-            }),
-        });
-
-        if (!response.ok) {
-            const errorData = await response.json();
-            toast({
-                variant: "destructive",
-                title: t('login.loginFailed'),
-                description: errorData.message || t('login.genericError'),
-            });
-            setIsLoading(false);
-            return;
-        }
-
-        const data = await response.json();
-
-        // Guardar el token en localStorage o manejarlo según sea necesario
-        localStorage.setItem('token', data.token);
-        localStorage.setItem('isAuthenticated', 'true');
-
-        toast({
-            title: t('login.success'),
-            description: t('login.welcomeBack'),
-        });
-
-        // Redirigir al usuario a la página principal
-        router.push('/');
-    } catch (error) {
-        console.error('❌ Error en el login:', error);
-        toast({
-            variant: "destructive",
-            title: t('login.genericError'),
-            description: t('login.serverError'),
-        });
-    } finally {
-        setIsLoading(false);
-    }
+    setTimeout(() => {
+      router.push('/loading'); 
+    }, 2000);
   };
 
   const renderSpinner = () => (
@@ -183,8 +178,8 @@ export default function LoginPage() {
                 {t('login.howToLogin')}
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <Button onClick={handleSelectNewUser} className="w-full" variant="outline">
+            <CardContent className="space-y-3">
+              <Button onClick={handleSelectNewUserQR} className="w-full" variant="outline">
                 <QrCode size={18} className="mr-2" />
                 {t('login.newUserQR')}
               </Button>
@@ -192,9 +187,106 @@ export default function LoginPage() {
                 <LogIn size={18} className="mr-2" />
                 {t('login.existingUserLogin')}
               </Button>
+              <Button onClick={handleSelectRegister} className="w-full" variant="secondary">
+                <UserPlus size={18} className="mr-2" />
+                {t('login.registerButtonInitial')}
+              </Button>
             </CardContent>
              <CardFooter className="text-xs text-muted-foreground text-center block pt-4">
               <p>{t('login.chooseOption')}</p>
+            </CardFooter>
+          </>
+        )}
+
+        {step === 'register' && (
+          <>
+            <CardHeader className="text-center">
+              <div className="mx-auto mb-4 p-3 bg-primary/10 rounded-full w-fit">
+                 <UserPlus size={40} className="text-primary" />
+              </div>
+              <CardTitle className="text-2xl">{t('login.registerTitle')}</CardTitle>
+              <CardDescription>
+                {t('login.registerDescription')}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleRegisterSubmit} className="space-y-4">
+                <div className="space-y-1">
+                  <Label htmlFor="reg-phone">{t('login.phoneNumberLabel')}</Label>
+                  <Input
+                    id="reg-phone"
+                    type="tel"
+                    value={phoneNumber}
+                    onChange={(e) => setPhoneNumber(e.target.value)}
+                    placeholder={t('login.phoneNumberPlaceholder')}
+                    required
+                    className="bg-input"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <Label htmlFor="reg-password">{t('login.passwordLabel')}</Label>
+                  <div className="relative">
+                    <Input
+                      id="reg-password"
+                      type={showPassword ? 'text' : 'password'}
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      placeholder={t('login.passwordPlaceholder')}
+                      required
+                      className="bg-input pr-10"
+                    />
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                    </Button>
+                  </div>
+                </div>
+                <div className="space-y-1">
+                  <Label htmlFor="reg-confirm-password">{t('login.confirmPasswordLabel')}</Label>
+                  <div className="relative">
+                    <Input
+                      id="reg-confirm-password"
+                      type={showConfirmPassword ? 'text' : 'password'}
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      placeholder={t('login.confirmPasswordPlaceholder')}
+                      required
+                      className="bg-input pr-10"
+                    />
+                     <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    >
+                      {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                    </Button>
+                  </div>
+                </div>
+                <Button type="submit" className="w-full mt-6" disabled={isLoading}>
+                  {isLoading ? (
+                    <>
+                      {renderSpinner()}
+                      {t('login.registering')}
+                    </>
+                  ) : (
+                    <>
+                      <ClipboardEdit size={18} className="mr-2" />
+                      {t('login.registerAndLoginButton')}
+                    </>
+                  )}
+                </Button>
+              </form>
+            </CardContent>
+             <CardFooter className="text-xs text-muted-foreground text-center block">
+              <p>{t('login.registerInfo')}</p>
+              <Button variant="link" size="sm" onClick={() => setStep('initial')} className="mt-2">{t('login.back')}</Button>
             </CardFooter>
           </>
         )}
@@ -212,17 +304,14 @@ export default function LoginPage() {
             </CardHeader>
             <CardContent className="flex flex-col items-center space-y-6">
               <div className="p-2 border rounded-lg bg-muted/20">
-                {qrCode ? (
-                  <img
-                    src={`https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(qrCode)}&size=300x300`}
-                    alt="QR Code"
-                    width={280}
-                    height={280}
-                    className="rounded-md"
-                  />
-                ) : (
-                  <p>{t('login.loadingQR')}</p>
-                )}
+                <Image
+                  src="https://picsum.photos/300/300"
+                  alt="QR Code Placeholder"
+                  width={280}
+                  height={280}
+                  className="rounded-md"
+                  data-ai-hint="qrcode login"
+                />
               </div>
               <Button 
                 onClick={handleQrScanned} 
@@ -311,15 +400,26 @@ export default function LoginPage() {
               <form onSubmit={handleLoginOrSetPassword} className="space-y-6">
                 <div className="space-y-2">
                   <Label htmlFor="password">{t('login.passwordLabel')}</Label>
-                  <Input
-                    id="password"
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder={t('login.passwordPlaceholder')}
-                    required
-                    className="bg-input"
-                  />
+                  <div className="relative">
+                    <Input
+                      id="password"
+                      type={showPassword ? 'text' : 'password'}
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      placeholder={t('login.passwordPlaceholder')}
+                      required
+                      className="bg-input pr-10"
+                    />
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                    </Button>
+                  </div>
                 </div>
                 <Button type="submit" className="w-full" disabled={isLoading}>
                   {isLoading ? (
@@ -343,6 +443,7 @@ export default function LoginPage() {
                   : t('login.enterPasswordInfo')
                 }
               </p>
+              {/* For QR flow, back goes to QR. For phone login, back goes to phone. */}
               <Button variant="link" size="sm" onClick={() => setStep(isNewUserFlow ? 'qr' : 'phone')} className="mt-2">{t('login.back')}</Button>
             </CardFooter>
           </>
@@ -351,3 +452,4 @@ export default function LoginPage() {
     </div>
   );
 }
+
